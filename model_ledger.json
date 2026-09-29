@@ -1,11 +1,16 @@
 {
-  "model_version": "RS-BAQE-v1.0",
+  "model_version": "RS-BAQE-v2.0-Champion1000",
   "parameters": {
-    "adaptive_bias": 0.0,
-    "gamma_learning_rate": 0.25,
-    "structural_vol_anchor": 14.8,
-    "contagion_multiplier": 1.8,
-    "dii_cushion_weight": 0.18
+    "adaptive_bias": -0.3963,
+    "gamma_learning_rate": 0.0445,
+    "w20_momentum": 0.2652,
+    "w120_momentum": -0.0078,
+    "w_dd_mean_reversion": -0.0469,
+    "th_value_reversal": -8.43,
+    "th_valuation_trap": 17.75,
+    "drift_reversal_pct": 1.855,
+    "drift_trap_pct": -0.812,
+    "drift_expansion_pct": 0.7
   },
   "forecast_history": [
     {
@@ -65,6 +70,19 @@
       "predicted_80pct_range": [
         21705,
         24098
+      ],
+      "status": "PENDING"
+    },
+    {
+      "origin_date": "2026-09-29",
+      "origin_close": 22716.19921875,
+      "target_date": "2026-10-30",
+      "horizon": "1-Month",
+      "predicted_median_pct": 2.19,
+      "predicted_median_level": 23213,
+      "predicted_80pct_range": [
+        21956,
+        24376
       ],
       "status": "PENDING"
     }

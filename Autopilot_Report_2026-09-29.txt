@@ -1,16 +1,17 @@
 ================================================================================
-AUTONOMOUS EQUITY PREDICTION & SELF-EVOLUTION REPORT
-Run Timestamp: 2026-09-29 08:33:52 IST
+AUTONOMOUS EQUITY PREDICTION & SELF-EVOLUTION REPORT (RS-BAQE v2.0)
+Run Timestamp: 2026-09-29 16:00:27 IST
 ================================================================================
 
 1. MARKET STATE DIAGNOSTICS:
 -----------------------------
 • Origin Date:               2026-09-29
-• Current Nifty 50 Close:    22,650.15
-• Active Macro Regime:       Value Reversal & Oversold Asymmetry (Bullish Dip-Buying)
-• 12-Month Drawdown:         -13.97%
-• 120-Day Momentum:          -5.61%
-• Self-Adapted Bias:         +0.0000 pp
+• Current Nifty 50 Close:    22,716.20
+• Active Macro Regime:       Value Reversal & Asymmetric Bounce (Bullish Dip-Buying Bias)
+• 12-Month Drawdown:         -13.72%
+• 120-Day Momentum:          -5.34%
+• 20-Day Momentum:           -5.57%
+• Self-Adapted Bias:         -0.3963 pp
 
 2. SELF-EVOLUTION AUDIT LOG:
 -----------------------------
@@ -19,24 +20,24 @@ No pending prior forecasts due for verification today.
 3. FORWARD PREDICTIONS (50,000 FHS PATHS):
 -------------------------------------------
 [A] 1-MONTH HORIZON (Target Date ~2026-10-30):
-    • Expected Move:         +1.32%
-    • Target Level (Median): 22,948
-    • 80% Confidence Band:   21,705 to 24,098
-    • 90% Confidence Band:   21,272 to 24,462
-    • Probability of Up-End: 62.9%
-    • Chance of 5% Dip Path: 20.3%
+    • Expected Move:         +2.19%
+    • Target Level (Median): 23,213
+    • 80% Confidence Band:   21,956 to 24,376
+    • 90% Confidence Band:   21,519 to 24,742
+    • Probability of Up-End: 70.6%
+    • Chance of 5% Dip Path: 17.5%
 
 [B] 3-MONTH HORIZON (Quarterly):
-    • Expected Move:         +3.63%
-    • Target Level:          23,472
-    • 80% Confidence Band:   21,298 to 25,611
-    • Probability of Up-End: 69.3%
+    • Expected Move:         +6.32%
+    • Target Level:          24,151
+    • 80% Confidence Band:   21,897 to 26,372
+    • Probability of Up-End: 79.8%
 
 [C] 6-MONTH HORIZON (Structural):
-    • Expected Move:         +7.10%
-    • Target Level:          24,258
-    • 80% Confidence Band:   21,091 to 27,490
-    • Probability of Up-End: 74.6%
+    • Expected Move:         +12.72%
+    • Target Level:          25,606
+    • 80% Confidence Band:   22,226 to 29,060
+    • Probability of Up-End: 86.5%
 
 4. CROSS-SECTIONAL ROTATION STRATEGY:
 --------------------------------------
@@ -47,6 +48,6 @@ No pending prior forecasts due for verification today.
 • FMCG:           UNDERWEIGHT (-4% to -6% expected)         -> Negative yield spread.
 
 ================================================================================
-Evolution Ledger updated: '/home/runner/work/nifty-quant-engine/nifty-quant-engine/model_ledger.json'
-Report saved:             '/home/runner/work/nifty-quant-engine/nifty-quant-engine/Autopilot_Report_2026-09-29.txt'
+Evolution Ledger updated: 'C:\Users\HP\Desktop\Equity model\model_ledger.json'
+Report saved:             'C:\Users\HP\Desktop\Equity model\Autopilot_Report_2026-09-29.txt'
 ================================================================================
