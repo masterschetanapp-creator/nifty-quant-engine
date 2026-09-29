@@ -1,3 +1,4 @@
+import numpy as np
 # Auto-generated champion parameters from 1,000-run CV search
 champion_params = [np.float64(0.26521286382900816), np.float64(-0.007768223079239495), np.float64(-0.046930124977678234), np.float64(-8.42959346114294), np.float64(17.748088313629793), np.float64(1.8547014559044044), np.float64(-0.8123092954936033), np.float64(0.699757832836914), np.float64(0.044519897580603165)]
 champion_stats = {

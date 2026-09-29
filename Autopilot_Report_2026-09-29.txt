@@ -1,6 +1,6 @@
 ================================================================================
 AUTONOMOUS EQUITY PREDICTION & SELF-EVOLUTION REPORT (RS-BAQE v2.0)
-Run Timestamp: 2026-09-29 16:00:27 IST
+Run Timestamp: 2026-09-29 16:11:58 IST
 ================================================================================
 
 1. MARKET STATE DIAGNOSTICS:
@@ -11,7 +11,7 @@ Run Timestamp: 2026-09-29 16:00:27 IST
 • 12-Month Drawdown:         -13.72%
 • 120-Day Momentum:          -5.34%
 • 20-Day Momentum:           -5.57%
-• Self-Adapted Bias:         -0.3963 pp
+• Self-Adapted Bias:         +0.1452 pp
 
 2. SELF-EVOLUTION AUDIT LOG:
 -----------------------------
@@ -20,24 +20,24 @@ No pending prior forecasts due for verification today.
 3. FORWARD PREDICTIONS (50,000 FHS PATHS):
 -------------------------------------------
 [A] 1-MONTH HORIZON (Target Date ~2026-10-30):
-    • Expected Move:         +2.19%
-    • Target Level (Median): 23,213
-    • 80% Confidence Band:   21,956 to 24,376
-    • 90% Confidence Band:   21,519 to 24,742
-    • Probability of Up-End: 70.6%
-    • Chance of 5% Dip Path: 17.5%
+    • Expected Move:         +2.24%
+    • Target Level (Median): 23,226
+    • 80% Confidence Band:   21,967 to 24,389
+    • 90% Confidence Band:   21,530 to 24,755
+    • Probability of Up-End: 71.0%
+    • Chance of 5% Dip Path: 17.2%
 
 [B] 3-MONTH HORIZON (Quarterly):
-    • Expected Move:         +6.32%
-    • Target Level:          24,151
-    • 80% Confidence Band:   21,897 to 26,372
-    • Probability of Up-End: 79.8%
+    • Expected Move:         +6.48%
+    • Target Level:          24,189
+    • 80% Confidence Band:   21,931 to 26,413
+    • Probability of Up-End: 80.3%
 
 [C] 6-MONTH HORIZON (Structural):
-    • Expected Move:         +12.72%
-    • Target Level:          25,606
-    • 80% Confidence Band:   22,226 to 29,060
-    • Probability of Up-End: 86.5%
+    • Expected Move:         +13.08%
+    • Target Level:          25,686
+    • 80% Confidence Band:   22,296 to 29,151
+    • Probability of Up-End: 87.0%
 
 4. CROSS-SECTIONAL ROTATION STRATEGY:
 --------------------------------------

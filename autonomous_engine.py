@@ -59,21 +59,21 @@ def load_or_init_ledger():
         with open(LEDGER_FILE, "r", encoding="utf-8") as f:
             return json.load(f)
     return {
-        "model_version": "RS-BAQE-v2.0-Champion1000",
+        "model_version": "RS-BAQE-v3.0-131Months",
         "parameters": {
             "adaptive_bias": 0.0,
-            "gamma_learning_rate": 0.0445,
+            "gamma_learning_rate": 0.02,
             "structural_vol_anchor": 14.8,
             "contagion_multiplier": 1.8,
             "dii_cushion_weight": 0.18,
-            "w20_momentum": 0.2652,
-            "w120_momentum": -0.0078,
-            "w_dd_mean_reversion": -0.0469,
-            "th_value_reversal": -8.43,
-            "th_valuation_trap": 17.75,
-            "drift_reversal_pct": 1.855,
-            "drift_trap_pct": -0.812,
-            "drift_expansion_pct": 0.700
+            "w20_momentum": 0.2998,
+            "w120_momentum": 0.0109,
+            "w_dd_mean_reversion": -0.0700,
+            "th_value_reversal": -8.26,
+            "th_valuation_trap": 18.91,
+            "drift_reversal_pct": 1.952,
+            "drift_trap_pct": -0.784,
+            "drift_expansion_pct": 0.770
         },
         "forecast_history": []
     }
@@ -141,13 +141,13 @@ def run_autonomous_cycle():
     mom20 = float((latest_close / close[-20] - 1.0) * 100.0)
     sma50 = float(close[-50:].mean())
     
-    if dd252 < -8.43:
+    if dd252 < -8.26:
         regime = "Value Reversal & Asymmetric Bounce (Bullish Dip-Buying Bias)"
-        drift_ann = 0.2226
+        drift_ann = 0.2342
         vol_anchor = 15.0
-    elif mom120 > 17.75 and dd252 > -3.0:
+    elif mom120 > 18.91 and dd252 > -3.0:
         regime = "Valuation Trap & Overbought Snapback (Correction Risk)"
-        drift_ann = -0.0974
+        drift_ann = -0.0941
         vol_anchor = 16.0
     elif latest_close < sma50 and mom20 < -1.0:
         regime = "Tactical Pullback & Distribution"
@@ -155,7 +155,7 @@ def run_autonomous_cycle():
         vol_anchor = 15.2
     else:
         regime = "Structural Expansion & SIP Floor"
-        drift_ann = 0.0840
+        drift_ann = 0.0924
         vol_anchor = 13.8
         
     drift_ann_adapted = drift_ann - (params["adaptive_bias"] / 100.0)
