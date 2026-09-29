@@ -1,0 +1,1 @@
+{"name": "v1", "L": 750, "vol": "garch", "tails": "fhs", "anchor": "window", "drift": "multi", "prior": 0.09, "lam": 10, "k": 1.0}

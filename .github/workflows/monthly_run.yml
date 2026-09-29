@@ -1,0 +1,36 @@
+name: Autonomous Monthly Equity Prediction & Self-Evolution
+
+on:
+  schedule:
+    # Runs at 10:30 UTC (4:00 PM IST) on the 29th of every month
+    - cron: '30 10 29 * *'
+  workflow_dispatch: # Allows manual one-click trigger anytime from GitHub
+
+jobs:
+  run-monthly-engine:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install yfinance scipy pandas numpy
+
+      - name: Execute Autonomous Self-Evolution Engine
+        run: |
+          python autonomous_engine.py
+
+      - name: Commit & Push Updated Model Ledger and Reports
+        run: |
+          git config --global user.name "Autonomous Quant Bot"
+          git config --global user.email "bot@quant.local"
+          git add model_ledger.json Autopilot_Report_*.txt
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-audit and evolved forecast for $(date +'%Y-%m-%d')" && git push)

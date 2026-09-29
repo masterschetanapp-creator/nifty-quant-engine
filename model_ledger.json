@@ -1,0 +1,59 @@
+{
+  "model_version": "RS-BAQE-v1.0",
+  "parameters": {
+    "adaptive_bias": 0.0,
+    "gamma_learning_rate": 0.25,
+    "structural_vol_anchor": 14.8,
+    "contagion_multiplier": 1.8,
+    "dii_cushion_weight": 0.18
+  },
+  "forecast_history": [
+    {
+      "origin_date": "2024-10-29",
+      "origin_close": 24454.0,
+      "target_date": "2025-04-29",
+      "horizon": "6-Month",
+      "predicted_median_pct": 0.33,
+      "predicted_median_level": 24534.0,
+      "predicted_80pct_range": [
+        21505.6,
+        27365.8
+      ],
+      "actual_close": 24325.45,
+      "actual_ret_pct": -0.53,
+      "error_pp": -0.86,
+      "direction_hit": true,
+      "status": "VERIFIED"
+    },
+    {
+      "origin_date": "2025-10-29",
+      "origin_close": 26068.3,
+      "target_date": "2026-04-29",
+      "horizon": "6-Month",
+      "predicted_median_pct": -6.75,
+      "predicted_median_level": 24308.2,
+      "predicted_80pct_range": [
+        21087.6,
+        27810.5
+      ],
+      "actual_close": 24163.6,
+      "actual_ret_pct": -7.31,
+      "error_pp": -0.56,
+      "direction_hit": true,
+      "status": "VERIFIED"
+    },
+    {
+      "origin_date": "2026-09-29",
+      "origin_close": 22668.69921875,
+      "target_date": "2026-10-30",
+      "horizon": "1-Month",
+      "predicted_median_pct": 1.32,
+      "predicted_median_level": 22967,
+      "predicted_80pct_range": [
+        21728,
+        24114
+      ],
+      "status": "PENDING"
+    }
+  ]
+}
