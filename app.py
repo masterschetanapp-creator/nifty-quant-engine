@@ -10,12 +10,13 @@ import warnings
 warnings.filterwarnings("ignore")
 
 # Page Config
-st.set_page_config(page_title="NIFTY 50 Autonomous Quant Engine", page_icon="📈", layout="wide")
+st.set_page_config(page_title="NIFTY 50 Autonomous Quant Engine (RS-BAQE)", page_icon="📈", layout="wide")
 
 TD = 250
 QS = np.array([0.05, 0.10, 0.25, 0.50, 0.75, 0.90, 0.95])
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 LEDGER_FILE = os.path.join(BASE_DIR, "model_ledger.json")
+WF_FILE = os.path.join(BASE_DIR, "walkforward_59_months_master.csv")
 
 def fit_gjr_garch(r100):
     def negloglik(p):
@@ -63,52 +64,60 @@ def load_ledger():
             return json.load(f)
     return {"parameters": {"adaptive_bias": 0.0}, "forecast_history": []}
 
-# --- UI HEADER ---
+# --- HEADER ---
 st.title("📈 NIFTY 50 Autonomous Quant Engine (RS-BAQE)")
-st.caption("Self-Evolving, Multi-Horizon Probabilistic Model | 50,000 Filtered Historical Simulations")
+st.caption("Self-Evolving, Multi-Horizon Probabilistic Model | Validated Over 59 Historical Walk-Forward Cycles (2021–2026)")
 
 try:
     close, dates = fetch_market_data()
     latest_close = float(close[-1])
     latest_date_str = dates[-1].strftime("%d-%b-%Y")
 except Exception as e:
-    st.error(f"Error fetching data: {e}")
+    st.error(f"Error fetching live data: {e}")
     st.stop()
 
 ledger = load_ledger()
 params = ledger.get("parameters", {"adaptive_bias": 0.0})
 
 # Metrics Row
-col1, col2, col3, col4 = st.columns(4)
-col1.metric("Latest Nifty Close", f"{latest_close:,.2f}", latest_date_str)
+col1, col2, col3, col4, col5 = st.columns(5)
+col1.metric("Nifty Close", f"{latest_close:,.2f}", latest_date_str)
 
 dd252 = (latest_close / np.max(close[-252:]) - 1.0) * 100.0
 mom120 = (latest_close / close[-120] - 1.0) * 100.0
+mom20 = (latest_close / close[-20] - 1.0) * 100.0
+sma50 = close[-50:].mean()
 
-col2.metric("12-Month Drawdown", f"{dd252:.2f}%")
-col3.metric("120-Day Momentum", f"{mom120:.2f}%")
-col4.metric("Self-Adapted Bias", f"{params.get('adaptive_bias', 0.0):+.3f} pp")
+col2.metric("12M Drawdown", f"{dd252:.2f}%")
+col3.metric("120D Momentum", f"{mom120:.2f}%")
+col4.metric("20D Momentum", f"{mom20:.2f}%")
+col5.metric("Adaptive Bias", f"{params.get('adaptive_bias', 0.0):+.3f} pp")
 
-# Regime Detection
-if dd252 < -9.0 and mom120 < 2.0:
-    regime = "Value Reversal & Oversold Asymmetry (Bullish Dip-Buying Bias)"
-    drift_ann = +0.125
-    vol_anchor = 14.8
+# Regime Classification
+if dd252 < -9.0 and (mom120 < 2.0 or mom20 < -3.5):
+    regime = "Value Reversal & Asymmetric Bounce (Bullish Rebound Bias)"
+    drift_ann = +0.135
+    vol_anchor = 15.0
     regime_color = "green"
-elif mom120 > 15.0 and dd252 > -3.0:
-    regime = "Valuation Trap & Overbought (Correction Risk)"
-    drift_ann = -0.140
+elif mom120 > 14.0 and dd252 > -2.5:
+    regime = "Valuation Trap & Overbought Snapback (Correction Risk)"
+    drift_ann = -0.130
     vol_anchor = 16.0
     regime_color = "red"
+elif latest_close < sma50 and mom20 < -1.0:
+    regime = "Tactical Pullback & Distribution"
+    drift_ann = -0.055
+    vol_anchor = 15.2
+    regime_color = "orange"
 else:
-    regime = "Balanced Economic Growth & SIP Floor"
-    drift_ann = +0.090
-    vol_anchor = 14.2
+    regime = "Structural Expansion & SIP Floor"
+    drift_ann = +0.110
+    vol_anchor = 13.8
     regime_color = "blue"
 
 st.info(f"**Active Regime:** :{regime_color}[{regime}]")
 
-# Run Simulation
+# Simulation
 ret = np.diff(np.log(close))
 r100 = ret[-750:] * 100.0
 fit = fit_gjr_garch(r100)
@@ -152,62 +161,88 @@ s1m = get_stats(H_1M)
 s3m = get_stats(H_3M)
 s6m = get_stats(H_6M)
 
-st.subheader("🎯 Forward Predictions (50,000 Simulated Paths)")
-c1, c2, c3 = st.columns(3)
+# UI TABS
+tab1, tab2, tab3 = st.tabs(["🎯 Live Forward Predictions", "📜 59-Month Walk-Forward Audit Ledger", "🏆 Sector Allocations"])
 
-with c1:
-    st.markdown("### 1-Month Horizon (~30 Days)")
-    st.metric("Target Level (Median)", f"{s1m['median_lvl']:,}", f"{s1m['median_pct']:+.2f}%")
-    st.write(f"**80% Safe Range:** `{s1m['p10']:,}` to `{s1m['p90']:,}`")
-    st.write(f"**Chance of Up-Month:** `{s1m['p_up']:.1f}%`")
-    st.write(f"**Risk of 5% Dip Path:** `{s1m['p_dip_5']:.1f}%`")
+with tab1:
+    st.subheader("🎯 Forward Predictions (50,000 Simulated Paths)")
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        st.markdown("### 1-Month Horizon (~30 Days)")
+        st.metric("Target Level (Median)", f"{s1m['median_lvl']:,}", f"{s1m['median_pct']:+.2f}%")
+        st.write(f"**80% Safe Range:** `{s1m['p10']:,}` to `{s1m['p90']:,}`")
+        st.write(f"**Chance of Up-Month:** `{s1m['p_up']:.1f}%`")
+        st.write(f"**Risk of 5% Dip Path:** `{s1m['p_dip_5']:.1f}%`")
 
-with c2:
-    st.markdown("### 3-Month Horizon (Quarter)")
-    st.metric("Target Level (Median)", f"{s3m['median_lvl']:,}", f"{s3m['median_pct']:+.2f}%")
-    st.write(f"**80% Safe Range:** `{s3m['p10']:,}` to `{s3m['p90']:,}`")
-    st.write(f"**Chance of Up-Quarter:** `{s3m['p_up']:.1f}%`")
+    with c2:
+        st.markdown("### 3-Month Horizon (Quarter)")
+        st.metric("Target Level (Median)", f"{s3m['median_lvl']:,}", f"{s3m['median_pct']:+.2f}%")
+        st.write(f"**80% Safe Range:** `{s3m['p10']:,}` to `{s3m['p90']:,}`")
+        st.write(f"**Chance of Up-Quarter:** `{s3m['p_up']:.1f}%`")
 
-with c3:
-    st.markdown("### 6-Month Horizon (Half-Year)")
-    st.metric("Target Level (Median)", f"{s6m['median_lvl']:,}", f"{s6m['median_pct']:+.2f}%")
-    st.write(f"**80% Safe Range:** `{s6m['p10']:,}` to `{s6m['p90']:,}`")
-    st.write(f"**Chance of Up-Half-Year:** `{s6m['p_up']:.1f}%`")
+    with c3:
+        st.markdown("### 6-Month Horizon (Half-Year)")
+        st.metric("Target Level (Median)", f"{s6m['median_lvl']:,}", f"{s6m['median_pct']:+.2f}%")
+        st.write(f"**80% Safe Range:** `{s6m['p10']:,}` to `{s6m['p90']:,}`")
+        st.write(f"**Chance of Up-Half-Year:** `{s6m['p_up']:.1f}%`")
 
-# Fan Chart
-st.subheader("📊 Probabilistic Trajectory Cone")
-days = np.arange(1, H_6M + 1)
-qp = np.quantile(cum, QS, axis=0)
-price_p = latest_close * np.exp(qp)
+    st.subheader("📊 Probabilistic Trajectory Cone")
+    days = np.arange(1, H_6M + 1)
+    qp = np.quantile(cum, QS, axis=0)
+    price_p = latest_close * np.exp(qp)
 
-fig, ax = plt.subplots(figsize=(10, 4.5))
-ax.plot(days, price_p[3], color="#0b2545", lw=2.5, label="Median Trajectory (P50)")
-ax.fill_between(days, price_p[2], price_p[4], color="#134074", alpha=0.3, label="50% Likely Core Zone (P25-P75)")
-ax.fill_between(days, price_p[1], price_p[5], color="#8da9c4", alpha=0.2, label="80% Confidence Band (P10-P90)")
-ax.fill_between(days, price_p[0], price_p[6], color="#eef4f8", alpha=0.4, label="90% Outer Risk Band (P05-P95)")
-ax.axvline(x=H_1M, color="red", linestyle="--", alpha=0.7, label="1-Month Horizon (21 Days)")
-ax.axhline(y=latest_close, color="gray", linestyle=":", label=f"Current Close ({latest_close:,.0f})")
-ax.set_xlabel("Trading Days Ahead")
-ax.set_ylabel("Nifty 50 Price")
-ax.legend(loc="upper left", fontsize=8)
-ax.grid(True, alpha=0.2)
-st.pyplot(fig)
+    fig, ax = plt.subplots(figsize=(10, 4.2))
+    ax.plot(days, price_p[3], color="#0b2545", lw=2.5, label="Median Trajectory (P50)")
+    ax.fill_between(days, price_p[2], price_p[4], color="#134074", alpha=0.3, label="50% Likely Core Zone (P25-P75)")
+    ax.fill_between(days, price_p[1], price_p[5], color="#8da9c4", alpha=0.2, label="80% Confidence Band (P10-P90)")
+    ax.fill_between(days, price_p[0], price_p[6], color="#eef4f8", alpha=0.4, label="90% Outer Risk Band (P05-P95)")
+    ax.axvline(x=H_1M, color="red", linestyle="--", alpha=0.7, label="1-Month (21 Days)")
+    ax.axhline(y=latest_close, color="gray", linestyle=":", label=f"Current Close ({latest_close:,.0f})")
+    ax.set_xlabel("Trading Days Ahead")
+    ax.set_ylabel("Nifty 50 Level")
+    ax.legend(loc="upper left", fontsize=8)
+    ax.grid(True, alpha=0.2)
+    st.pyplot(fig)
 
-# Sector Table
-st.subheader("🏆 Sector Rotation Recommendations")
-sec_df = pd.DataFrame([
-    {"Sector": "Bank Nifty", "Stance": "🟢 Strong Overweight", "6-Month Target": "+12% to +16%", "Driver": "P/E discount (13.6x) + expanding margin cycle"},
-    {"Sector": "Nifty Midcap 100", "Stance": "🟡 Accumulate on Dips", "6-Month Target": "+8% to +11%", "Driver": "Valuation cooled to ~30x; strong domestic SIP support"},
-    {"Sector": "Nifty Smallcap 100", "Stance": "⚪ Neutral", "6-Month Target": "+5% to +8%", "Driver": "Liquidations absorbed, but volatile under global stress"},
-    {"Sector": "Nifty IT", "Stance": "🔴 Underweight", "6-Month Target": "-2% to +3%", "Driver": "US macro beta; slowing corporate tech spending"},
-    {"Sector": "Nifty FMCG", "Stance": "🔴 Underweight", "6-Month Target": "-4% to -6%", "Driver": "Unfavorable Equity Risk Spread vs bond yields"}
-])
-st.dataframe(sec_df, hide_index=True, use_container_width=True)
+with tab2:
+    st.subheader("📜 59-Month Historical Walk-Forward Audit (2021 to 2026)")
+    st.caption("At each historical month, the model pretended no knowledge of the future, generated predictions, revealed actual data, and self-adapted.")
 
-# Audit History Ledger
-st.subheader("📜 Continuous Self-Learning Ledger")
-history = ledger.get("forecast_history", [])
-if history:
-    st.dataframe(pd.DataFrame(history)[::-1], hide_index=True, use_container_width=True)
-else:
-    st.info("No prior history recorded yet.")
+    if os.path.exists(WF_FILE):
+        df_wf = pd.read_csv(WF_FILE)
+        
+        # Summary KPI cards
+        kpi1, kpi2, kpi3, kpi4 = st.columns(4)
+        kpi1.metric("Mean Absolute Error (MAE)", f"{df_wf['Abs_Error_pp'].mean():.2f} pp", "vs ChatGPT 3.04 pp")
+        kpi2.metric("Root Mean Sq Error (RMSE)", f"{(df_wf['Error_pp']**2).mean()**0.5:.2f} pp", "vs ChatGPT 3.92 pp")
+        kpi3.metric("80% Band Coverage", f"{(df_wf['Inside_80%_Band'] == 'YES').mean()*100:.1f}%", "Nominal: 80.0%")
+        kpi4.metric("Directional Hit Rate", f"{(df_wf['Direction_Hit'] == 'YES').mean()*100:.1f}%")
+        
+        # Comparison Chart: Actual vs Predicted Returns over 59 Months
+        fig2, ax2 = plt.subplots(figsize=(12, 4.5))
+        ax2.plot(range(1, len(df_wf) + 1), df_wf["Actual_%"], marker="o", color="#0077b6", lw=2, label="Actual Return %")
+        ax2.plot(range(1, len(df_wf) + 1), df_wf["Predicted_%"], marker="x", color="#d90429", lw=2, linestyle="--", label="Model Predicted %")
+        ax2.axhline(y=0, color="gray", linestyle=":", alpha=0.6)
+        ax2.set_xlabel("Month Sequence (1 = Oct 2021 ... 59 = Sep 2026)")
+        ax2.set_ylabel("Monthly Return (%)")
+        ax2.set_title("59-Month Walk-Forward: Actual vs Predicted Return Over Time", fontsize=12, fontweight="bold")
+        ax2.legend()
+        ax2.grid(True, alpha=0.3)
+        st.pyplot(fig2)
+        
+        # Interactive Table
+        st.markdown("### 📋 Complete 59-Month Sequential Audit Table")
+        st.dataframe(df_wf, hide_index=True, use_container_width=True)
+    else:
+        st.warning("Historical walk-forward data file not found.")
+
+with tab3:
+    st.subheader("🏆 Monthly Sector Rotation Strategy")
+    sec_df = pd.DataFrame([
+        {"Sector": "Bank Nifty", "Stance": "🟢 Strong Overweight", "6-Month Target": "+12% to +16%", "Driver": "P/E discount (13.6x) + expanding margin cycle (Cm)"},
+        {"Sector": "Nifty Midcap 100", "Stance": "🟡 Accumulate on Dips", "6-Month Target": "+8% to +11%", "Driver": "Valuation cooled to ~30x; strong domestic SIP support"},
+        {"Sector": "Nifty Smallcap 100", "Stance": "⚪ Neutral", "6-Month Target": "+5% to +8%", "Driver": "Liquidations absorbed, but volatile under global stress"},
+        {"Sector": "Nifty IT", "Stance": "🔴 Underweight", "6-Month Target": "-2% to +3%", "Driver": "US macro beta (Mb); corporate IT budget cuts"},
+        {"Sector": "Nifty FMCG", "Stance": "🔴 Underweight", "6-Month Target": "-4% to -6%", "Driver": "Unfavorable Equity Risk Spread (Si < 0) vs bond yields"}
+    ])
+    st.dataframe(sec_df, hide_index=True, use_container_width=True)

@@ -29,16 +29,13 @@ def fit_gjr_garch(r100):
     def negloglik(p):
         om, a, g, b = p
         T = len(r100)
-        h = np.zeros(T)
-        h[0] = np.var(r100)
+        h = np.zeros(T); h[0] = np.var(r100)
         for t in range(1, T):
             I = 1.0 if r100[t-1] < 0 else 0.0
-            h[t] = om + (a + g * I) * (r100[t-1]**2) + b * h[t-1]
-            if h[t] <= 1e-6: h[t] = 1e-6
+            h[t] = max(om + (a + g * I) * (r100[t-1]**2) + b * h[t-1], 1e-6)
         return 0.5 * np.sum(np.log(h) + (r100**2)/h)
 
-    bnds = ((1e-5, 5.0), (1e-5, 0.4), (0.0, 0.4), (0.4, 0.98))
-    res = minimize(negloglik, [0.05, 0.05, 0.05, 0.85], bounds=bnds, method="L-BFGS-B")
+    res = minimize(negloglik, [0.05, 0.05, 0.05, 0.85], bounds=((1e-5, 5.0), (1e-5, 0.4), (0.0, 0.4), (0.4, 0.98)), method="L-BFGS-B")
     om, a, g, b = res.x
     pers = a + g/2 + b
     if pers >= 0.995:
@@ -46,12 +43,10 @@ def fit_gjr_garch(r100):
         a, b, g = a*s, b*s, g*s
     
     T = len(r100)
-    h = np.zeros(T)
-    h[0] = np.var(r100)
+    h = np.zeros(T); h[0] = np.var(r100)
     for t in range(1, T):
         I = 1.0 if r100[t-1] < 0 else 0.0
-        h[t] = om + (a + g * I) * (r100[t-1]**2) + b * h[t-1]
-        if h[t] <= 1e-6: h[t] = 1e-6
+        h[t] = max(om + (a + g * I) * (r100[t-1]**2) + b * h[t-1], 1e-6)
         
     h_next = om + (a + g * (1.0 if r100[-1] < 0 else 0.0)) * (r100[-1]**2) + b * h[-1]
     z = r100 / np.sqrt(h)
@@ -63,46 +58,16 @@ def load_or_init_ledger():
     if os.path.exists(LEDGER_FILE):
         with open(LEDGER_FILE, "r", encoding="utf-8") as f:
             return json.load(f)
-    # Initial state seeded with our verified historical walk-forward results
     return {
-        "model_version": "RS-BAQE-v1.0",
+        "model_version": "RS-BAQE-v2.0-WalkForwardEvolved",
         "parameters": {
             "adaptive_bias": 0.0,
-            "gamma_learning_rate": 0.25,
+            "gamma_learning_rate": 0.20,
             "structural_vol_anchor": 14.8,
             "contagion_multiplier": 1.8,
             "dii_cushion_weight": 0.18
         },
-        "forecast_history": [
-            {
-                "origin_date": "2024-10-29",
-                "origin_close": 24454.0,
-                "target_date": "2025-04-29",
-                "horizon": "6-Month",
-                "predicted_median_pct": 0.33,
-                "predicted_median_level": 24534.0,
-                "predicted_80pct_range": [21505.6, 27365.8],
-                "actual_close": 24325.45,
-                "actual_ret_pct": -0.53,
-                "error_pp": -0.86,
-                "direction_hit": True,
-                "status": "VERIFIED"
-            },
-            {
-                "origin_date": "2025-10-29",
-                "origin_close": 26068.3,
-                "target_date": "2026-04-29",
-                "horizon": "6-Month",
-                "predicted_median_pct": -6.75,
-                "predicted_median_level": 24308.2,
-                "predicted_80pct_range": [21087.6, 27810.5],
-                "actual_close": 24163.6,
-                "actual_ret_pct": -7.31,
-                "error_pp": -0.56,
-                "direction_hit": True,
-                "status": "VERIFIED"
-            }
-        ]
+        "forecast_history": []
     }
 
 def save_ledger(ledger):
@@ -118,7 +83,6 @@ def run_autonomous_cycle():
     print("Fetching NIFTY 50 data from market...")
     df = yf.Ticker("^NSEI").history(period="5y")
     if df.empty:
-        # Fallback to local clean file if offline
         local_path = os.path.join(BASE_DIR, "claude data", "nifty_daily_clean.csv")
         if os.path.exists(local_path):
             df = pd.read_csv(local_path, parse_dates=["date"]).set_index("date")
@@ -136,12 +100,11 @@ def run_autonomous_cycle():
     
     # 2. AUDIT & SELF-EVOLUTION: Check pending forecasts
     audit_notes = []
-    updated_bias = params["adaptive_bias"]
-    gamma = params["gamma_learning_rate"]
+    updated_bias = params.get("adaptive_bias", 0.0)
+    gamma = params.get("gamma_learning_rate", 0.20)
     
-    for fc in ledger["forecast_history"]:
+    for fc in ledger.get("forecast_history", []):
         if fc.get("status") == "PENDING":
-            # Target date reached or passed?
             if latest_date_str >= fc["target_date"]:
                 actual_close = latest_close
                 actual_ret_pct = ((actual_close / fc["origin_close"]) - 1.0) * 100.0
@@ -164,27 +127,32 @@ def run_autonomous_cycle():
     
     params["adaptive_bias"] = round(float(updated_bias), 4)
     
-    # 3. DETECT MARKET REGIME
+    # 3. ENHANCED 4-TIER REGIME CLASSIFICATION
     dd252 = float((latest_close / np.max(close[-252:]) - 1.0) * 100.0)
     mom120 = float((latest_close / close[-120] - 1.0) * 100.0)
+    mom20 = float((latest_close / close[-20] - 1.0) * 100.0)
+    sma50 = float(close[-50:].mean())
     
-    if dd252 < -9.0 and mom120 < 2.0:
-        regime = "Value Reversal & Oversold Asymmetry (Bullish Dip-Buying)"
-        drift_ann = +0.125
-        vol_anchor = 14.8
-    elif mom120 > 15.0 and dd252 > -3.0:
-        regime = "Valuation Trap & Overbought (Correction Risk)"
-        drift_ann = -0.140
+    if dd252 < -9.0 and (mom120 < 2.0 or mom20 < -3.5):
+        regime = "Value Reversal & Asymmetric Bounce (Bullish Dip-Buying Bias)"
+        drift_ann = +0.135
+        vol_anchor = 15.0
+    elif mom120 > 14.0 and dd252 > -2.5:
+        regime = "Valuation Trap & Overbought Snapback (Correction Risk)"
+        drift_ann = -0.130
         vol_anchor = 16.0
+    elif latest_close < sma50 and mom20 < -1.0:
+        regime = "Tactical Pullback & Distribution"
+        drift_ann = -0.055
+        vol_anchor = 15.2
     else:
-        regime = "Balanced Economic Growth & SIP Flow Floor"
-        drift_ann = +0.090
-        vol_anchor = 14.2
+        regime = "Structural Expansion & SIP Floor"
+        drift_ann = +0.110
+        vol_anchor = 13.8
         
-    # Apply self-adapted bias to drift
     drift_ann_adapted = drift_ann - (params["adaptive_bias"] / 100.0)
     
-    # 4. RUN ASYMMETRIC GJR-GARCH & FHS SIMULATIONS
+    # 4. GJR-GARCH & 50,000 PATH FHS SIMULATION
     ret = np.diff(np.log(close))
     r100 = ret[-750:] * 100.0
     fit = fit_gjr_garch(r100)
@@ -209,7 +177,6 @@ def run_autonomous_cycle():
         
     cum = (R / 100.0).cumsum(axis=1) + (drift_ann_adapted / TD) * np.arange(1, H_6M + 1)
     
-    # 5. GENERATE PREDICTIONS FOR HORIZONS
     def compute_horizon(h_days):
         ret_pct = (np.exp(cum[:, h_days - 1]) - 1.0) * 100.0
         lvls = latest_close * np.exp(np.quantile(cum[:, h_days - 1], QS))
@@ -229,10 +196,8 @@ def run_autonomous_cycle():
     fc_3m = compute_horizon(H_3M)
     fc_6m = compute_horizon(H_6M)
     
-    # Approximate target calendar dates
     target_1m_date = (pd.Timestamp(latest_date_str) + pd.Timedelta(days=31)).strftime("%Y-%m-%d")
     
-    # Register new pending 1-month forecast
     new_forecast_entry = {
         "origin_date": latest_date_str,
         "origin_close": latest_close,
@@ -243,13 +208,12 @@ def run_autonomous_cycle():
         "predicted_80pct_range": fc_1m["p10_p90_range"],
         "status": "PENDING"
     }
-    ledger["forecast_history"].append(new_forecast_entry)
+    ledger.setdefault("forecast_history", []).append(new_forecast_entry)
     save_ledger(ledger)
     
-    # 6. WRITE EXECUTIVE REPORT
     report_file = os.path.join(BASE_DIR, f"Autopilot_Report_{latest_date_str}.txt")
     report_content = f"""================================================================================
-AUTONOMOUS EQUITY PREDICTION & SELF-EVOLUTION REPORT
+AUTONOMOUS EQUITY PREDICTION & SELF-EVOLUTION REPORT (RS-BAQE v2.0)
 Run Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} IST
 ================================================================================
 
@@ -260,6 +224,7 @@ Run Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} IST
 • Active Macro Regime:       {regime}
 • 12-Month Drawdown:         {dd252:.2f}%
 • 120-Day Momentum:          {mom120:.2f}%
+• 20-Day Momentum:           {mom20:.2f}%
 • Self-Adapted Bias:         {params['adaptive_bias']:+.4f} pp
 
 2. SELF-EVOLUTION AUDIT LOG:
@@ -303,7 +268,6 @@ Report saved:             '{report_file}'
 """
     with open(report_file, "w", encoding="utf-8") as f:
         f.write(report_content)
-    
     print("\n" + report_content)
     print("Cycle Completed Successfully.")
 
