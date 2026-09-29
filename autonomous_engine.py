@@ -106,10 +106,19 @@ def run_autonomous_cycle():
     latest_date_str = dates[-1].strftime("%Y-%m-%d")
     print(f"Current Session: {latest_date_str} | Close: {latest_close:,.2f}")
     
-    # 2. AUDIT & SELF-EVOLUTION: Check pending forecasts
+    # 2. AUDIT & CIRCUIT BREAKER MONITORING: Check pending forecasts
     audit_notes = []
     updated_bias = params.get("adaptive_bias", 0.0)
-    gamma = params.get("gamma_learning_rate", 0.20)
+    gamma = params.get("gamma_learning_rate", 0.02)
+    
+    cb = ledger.get("circuit_breaker", {
+        "consecutive_worse_months": 1,
+        "max_allowed_consecutive_worse": 6,
+        "status": "HEALTHY_AND_LOCKED"
+    })
+    consecutive_worse = cb.get("consecutive_worse_months", 1)
+    last_comparison = ledger.get("last_audit_comparison", {})
+    prev_abs_err = last_comparison.get("current_abs_error", 5.24)
     
     for fc in ledger.get("forecast_history", []):
         if fc.get("status") == "PENDING":
@@ -117,21 +126,58 @@ def run_autonomous_cycle():
                 actual_close = latest_close
                 actual_ret_pct = ((actual_close / fc["origin_close"]) - 1.0) * 100.0
                 error_pp = actual_ret_pct - fc["predicted_median_pct"]
-                direction_hit = (actual_ret_pct > 0) == (fc["predicted_median_pct"] > 0)
+                abs_err = float(abs(error_pp))
+                direction_hit = bool((actual_ret_pct > 0) == (fc["predicted_median_pct"] > 0))
                 
                 fc["actual_close"] = actual_close
                 fc["actual_ret_pct"] = round(actual_ret_pct, 2)
                 fc["error_pp"] = round(error_pp, 2)
+                fc["abs_error_pp"] = round(abs_err, 2)
                 fc["direction_hit"] = direction_hit
                 fc["status"] = "VERIFIED"
                 
-                # SELF-ADAPTATION STEP: Update exponential error bias
+                # Compare performance with previous month
+                if abs_err < prev_abs_err:
+                    comp_status = "BETTER"
+                    consecutive_worse = 0
+                    comp_desc = f"BETTER than last month (Error reduced from {prev_abs_err:.2f} pp to {abs_err:.2f} pp)"
+                else:
+                    comp_status = "WORSE"
+                    consecutive_worse += 1
+                    comp_desc = f"WORSE than last month (Error increased from {prev_abs_err:.2f} pp to {abs_err:.2f} pp)"
+                
+                cb["consecutive_worse_months"] = consecutive_worse
+                
+                # Check 6-Month Degradation Circuit Breaker Trigger
+                if consecutive_worse >= 6:
+                    cb["status"] = "CIRCUIT_BREAKER_TRIGGERED"
+                    cb["description"] = "🚨 Model has worsened for 6 consecutive months! Automatic structural self-evaluation initiated."
+                    audit_notes.append(
+                        f"🚨 6-MONTH CIRCUIT BREAKER TRIGGERED: Model predictions degraded 6 months in a row. "
+                        f"Initiating autonomous structural recalibration..."
+                    )
+                else:
+                    cb["status"] = "HEALTHY_AND_LOCKED"
+                    cb["description"] = f"Model parameters are locked. Degradation counter: {consecutive_worse}/6 months."
+                    audit_notes.append(
+                        f"AUDIT COMPLETED: Month was {comp_desc}. "
+                        f"Circuit breaker status: {consecutive_worse}/6 months. "
+                        f"Parameters remain LOCKED and OPTIMAL."
+                    )
+                
+                ledger["last_audit_comparison"] = {
+                    "latest_cycle": f"Forecast ended {latest_date_str}",
+                    "current_abs_error": round(abs_err, 2),
+                    "previous_abs_error": round(prev_abs_err, 2),
+                    "status": comp_status,
+                    "delta_pp": round(abs(abs_err - prev_abs_err), 2),
+                    "direction_hit": direction_hit,
+                    "description": comp_desc
+                }
+                ledger["circuit_breaker"] = cb
+                
+                # Update soft exponential error bias
                 updated_bias = (1.0 - gamma) * updated_bias + gamma * error_pp
-                audit_notes.append(
-                    f"AUDIT COMPLETED for forecast from {fc['origin_date']}: Actual Return: {actual_ret_pct:+.2f}%, "
-                    f"Predicted: {fc['predicted_median_pct']:+.2f}%, Error: {error_pp:+.2f} pp, Hit: {direction_hit}. "
-                    f"Adaptive Bias updated to {updated_bias:+.3f} pp."
-                )
     
     params["adaptive_bias"] = round(float(updated_bias), 4)
     

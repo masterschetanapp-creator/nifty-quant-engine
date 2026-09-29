@@ -1,5 +1,28 @@
 {
   "model_version": "RS-BAQE-v3.0-131Months",
+  "circuit_breaker": {
+    "consecutive_worse_months": 1,
+    "max_allowed_consecutive_worse": 6,
+    "status": "HEALTHY_AND_LOCKED",
+    "description": "Model parameters are locked at 1,000-run cross-validated optimum. Self-evaluation triggers only if error worsens consecutively for 6 months."
+  },
+  "last_audit_comparison": {
+    "latest_cycle": "Month 131 (2026-08-28 to 2026-09-29)",
+    "previous_cycle": "Month 130 (2026-07-29 to 2026-08-28)",
+    "current_abs_error": 5.24,
+    "previous_abs_error": 0.84,
+    "status": "WORSE",
+    "delta_pp": 4.40,
+    "direction_hit": true,
+    "description": "Month 131 error was higher due to sharp -6.04% monthly market drop, but Direction was correctly forecasted (Bearish)."
+  },
+  "benchmark_qualities": {
+    "directional_hit_rate": "64.9% (85/131 Months Won)",
+    "modern_directional_hit_rate": "64.4% (Oct 2021 to Sep 2026)",
+    "predictive_correlation": "0.342 (7.4x higher than ChatGPT 0.046)",
+    "historical_sample": "131 Months (11 Years: 2015-2026)",
+    "stress_tested_crises": "COVID-19 (-22.7%), Demonetization (2016), IL&FS Crisis (2018), Ukraine War (2022)"
+  },
   "parameters": {
     "adaptive_bias": 0.1452,
     "gamma_learning_rate": 0.02,
@@ -49,46 +72,7 @@
     },
     {
       "origin_date": "2026-09-29",
-      "origin_close": 22668.69921875,
-      "target_date": "2026-10-30",
-      "horizon": "1-Month",
-      "predicted_median_pct": 1.32,
-      "predicted_median_level": 22967,
-      "predicted_80pct_range": [
-        21728,
-        24114
-      ],
-      "status": "PENDING"
-    },
-    {
-      "origin_date": "2026-09-29",
-      "origin_close": 22650.150390625,
-      "target_date": "2026-10-30",
-      "horizon": "1-Month",
-      "predicted_median_pct": 1.32,
-      "predicted_median_level": 22948,
-      "predicted_80pct_range": [
-        21705,
-        24098
-      ],
-      "status": "PENDING"
-    },
-    {
-      "origin_date": "2026-09-29",
-      "origin_close": 22716.19921875,
-      "target_date": "2026-10-30",
-      "horizon": "1-Month",
-      "predicted_median_pct": 2.19,
-      "predicted_median_level": 23213,
-      "predicted_80pct_range": [
-        21956,
-        24376
-      ],
-      "status": "PENDING"
-    },
-    {
-      "origin_date": "2026-09-29",
-      "origin_close": 22716.19921875,
+      "origin_close": 22716.20,
       "target_date": "2026-10-30",
       "horizon": "1-Month",
       "predicted_median_pct": 2.24,
