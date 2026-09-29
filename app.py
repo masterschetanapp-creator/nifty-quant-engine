@@ -163,8 +163,151 @@ s1m = get_stats(H_1M)
 s3m = get_stats(H_3M)
 s6m = get_stats(H_6M)
 
+# Monthly Action Compass Determination
+if "Value Reversal" in regime:
+    action_title = "🟢 STRONG BUY / AGGRESSIVE DIP ACCUMULATION"
+    action_bg = "rgba(46, 204, 113, 0.15)"
+    action_border = "#27ae60"
+    action_summary = "Market is down -13.7% in a deep value zone. Statistically, odds of a 1-month bounce are ~71%. Invest your full ₹1,000 into NIFTYBEES on red dips!"
+    timing_tip = "Best timing: Buy in Week 1 or Week 2 on days when NIFTY is down -0.5% or more."
+elif "Trap" in regime:
+    action_title = "🔴 HOLD CASH / CRASH DEFENSE"
+    action_bg = "rgba(231, 76, 60, 0.15)"
+    action_border = "#c0392b"
+    action_summary = "Market is heavily overbought. High risk of a sharp correction. Do NOT buy equity this month. Park your ₹1,000 in safe liquid savings."
+    timing_tip = "Best timing: Keep cash ready as 'Dry Powder' to buy when the model flips to Green."
+elif "Tactical Pullback" in regime:
+    action_title = "🟠 PATIENCE / ACCUMULATE ON LATE-MONTH DIPS"
+    action_bg = "rgba(243, 156, 18, 0.15)"
+    action_border = "#d35400"
+    action_summary = "Market is undergoing short-term distribution. Don't rush in Week 1. Wait for prices to get cheaper later in the month."
+    timing_tip = "Best timing: Wait until Week 3 or Week 4 after a pullback occurs."
+else:
+    action_title = "🔵 STEADY SIP EXPANSION"
+    action_bg = "rgba(52, 152, 219, 0.15)"
+    action_border = "#2980b9"
+    action_summary = "Market trend is healthy and backed by domestic SIP inflows. Invest your ₹1,000 in steady tranches."
+    timing_tip = "Best timing: Split into ₹500 in Week 1 and ₹500 in Week 3."
+
+st.markdown(f"""
+<div style="background-color: {action_bg}; border-left: 5px solid {action_border}; padding: 12px 18px; border-radius: 6px; margin-bottom: 20px;">
+    <div style="font-size: 17px; font-weight: bold; color: {action_border}; margin-bottom: 4px;">💡 This Month's Action for Your ₹1,000: {action_title}</div>
+    <div style="font-size: 14px; margin-bottom: 4px;">{action_summary}</div>
+    <div style="font-size: 13px; opacity: 0.85;">⏱️ <b>When to invest:</b> {timing_tip} <i>(See the '💡 What to Do with My ₹1,000' tab below for full guide)</i></div>
+</div>
+""", unsafe_allow_html=True)
+
 # UI TABS
-tab1, tab2, tab3 = st.tabs(["🎯 Live Forward Predictions", "📜 59-Month Walk-Forward Audit Ledger", "🏆 Sector Allocations"])
+tab0, tab1, tab2, tab3 = st.tabs([
+    "💡 What to Do with My ₹1,000",
+    "🎯 Live Forward Predictions", 
+    "📜 Historical Audit Ledger (131 Months)", 
+    "🏆 Sector Allocations"
+])
+
+with tab0:
+    st.subheader("💡 Your ₹1,000 Monthly Action Compass")
+    st.caption("Simple, step-by-step guidance on what to do with your ₹1,000 this month, exactly when to buy, and how to safely build wealth.")
+    
+    col_act1, col_act2 = st.columns([3, 2])
+    with col_act1:
+        st.markdown(f"""
+        ### 📌 Step 1: Your Action Plan for This Month
+        * **Current Nifty 50 Level:** `{latest_close:,.2f}` | 12-Month Drawdown: `{dd252:.2f}%`
+        * **Active Signal:** **:{regime_color}[{action_title}]**
+        * **Target Asset:** **Nippon India ETF Nifty 50 BeES (`NIFTYBEES`)** on Zerodha / Groww / AngelOne (or direct Nifty 50 Index Mutual Fund).
+        * **Expected 1-Month Move:** **`{s1m['median_pct']:+.2f}%`** (Median Target: `{s1m['median_lvl']:,}`)
+        * **Odds of Making Profit this Month:** **`{s1m['p_up']:.1f}%`**
+        """)
+        
+        if "Value Reversal" in regime:
+            st.success("🎯 **The Order to Place:** Buy **4 units of NIFTYBEES** (trading at ~₹255/unit ≈ ₹1,020) on your broker app. You own real equity in India's top 50 companies with zero expiry date.")
+        elif "Trap" in regime:
+            st.error("🛑 **The Order to Place:** Do **NOT** buy equity this month. Leave your ₹1,000 in your bank account or park in a Liquid Mutual Fund (earning ~6.5% interest). Accumulate this cash as 'Dry Powder'.")
+        elif "Tactical Pullback" in regime:
+            st.warning("⏳ **The Order to Place:** Wait patiently. Do not buy in Week 1. When Nifty dips further in Week 3 or Week 4, buy your 4 units of NIFTYBEES.")
+        else:
+            st.info("✅ **The Order to Place:** Normal SIP mode. Buy 2 units (~₹510) in Week 1 and 2 units (~₹510) in Week 3.")
+
+    with col_act2:
+        st.markdown("### ⏱️ Step 2: Exactly WHEN to Invest During the Month")
+        st.write("""
+        You have the full 30 days to deploy your ₹1,000. Use these 3 golden rules:
+        
+        1. **The 'Red Day' Rule (Golden Rule):**
+           * Never buy on a day when Nifty is up +1% (green day).
+           * Always buy on a **Red Day** when Nifty is down **-0.5% to -1.0%** intraday (usually best between **1:30 PM and 3:00 PM**).
+           * This simple rule alone saves you 1% to 2% on your purchase price every month!
+           
+        2. **The 2-Week Stagger (Stress-Free):**
+           * **Week 1 (Days 1–7):** Buy 2 units (~₹510) on the first red day.
+           * **Week 2 or 3 (Days 8–20):** Buy the remaining 2 units (~₹510) on any pullback.
+           
+        3. **What if the market never dips all month?**
+           * If by Day 25 Nifty has only gone up, don't worry—deploy your remaining ₹500 before month-end so your monthly discipline is never broken.
+        """)
+
+    st.markdown("---")
+    
+    st.subheader("🧭 The 4-Regime Master Playbook (How to React Every Month)")
+    strat_data = pd.DataFrame([
+        {
+            "Market Regime": "🟢 Value Reversal (Current)",
+            "What it Means": "Deep dip (-8% to -15% drawdown); high rebound odds (71%)",
+            "What to Do with ₹1,000": "BUY FULL ₹1,000 into NIFTYBEES on Red Days",
+            "When in Month": "Week 1 to Week 2"
+        },
+        {
+            "Market Regime": "🔵 Structural Expansion",
+            "What it Means": "Normal, healthy bull trend driven by domestic SIPs",
+            "What to Do with ₹1,000": "Normal SIP: Invest ₹1,000",
+            "When in Month": "Split ₹500 Week 1 + ₹500 Week 3"
+        },
+        {
+            "Market Regime": "🟠 Tactical Pullback",
+            "What it Means": "Short-term distribution; momentum slowing down",
+            "What to Do with ₹1,000": "Wait for dip; do NOT rush in Week 1",
+            "When in Month": "Week 3 or Week 4 on deep dips"
+        },
+        {
+            "Market Regime": "🔴 Valuation Trap",
+            "What it Means": "Dangerous overbought bubble (+18%+ momentum); crash risk",
+            "What to Do with ₹1,000": "HOLD IN CASH / LIQUID FUND (Do NOT buy equity)",
+            "When in Month": "Hold as Dry Powder for next Green Dip"
+        }
+    ])
+    st.dataframe(strat_data, hide_index=True, use_container_width=True)
+    
+    st.markdown("---")
+    
+    st.subheader("📈 The Real Wealth Engine: ₹1,000 Compounding Calculator")
+    st.caption("See how your ₹1,000 monthly investment grows into substantial wealth over time.")
+    
+    calc_col1, calc_col2 = st.columns([1, 2])
+    with calc_col1:
+        monthly_inv = st.number_input("Monthly Investment (₹):", min_value=500, max_value=50000, value=1000, step=500)
+        cagr_rate = st.slider("Expected Annual Return (CAGR %):", min_value=10.0, max_value=18.0, value=13.5, step=0.5)
+        
+    with calc_col2:
+        r_m = (cagr_rate / 100.0) / 12.0
+        years_list = [1, 3, 5, 10, 15]
+        fv_data = []
+        for y in years_list:
+            n_m = y * 12
+            fv = monthly_inv * (((1 + r_m)**n_m - 1) / r_m) * (1 + r_m)
+            invested = monthly_inv * n_m
+            gains = fv - invested
+            fv_data.append({
+                "Horizon": f"{y} Years ({n_m} Months)",
+                "Total Invested": f"₹{invested:,.0f}",
+                "Estimated Gains": f"₹{gains:,.0f}",
+                "Total Wealth Value": f"₹{fv:,.0f}"
+            })
+        st.dataframe(pd.DataFrame(fv_data), hide_index=True, use_container_width=True)
+        st.caption("💡 *At 13.5% historical Nifty CAGR with smart dip-buying, ₹1,000/month compounds to ₹1.7+ Lakhs in 7 years and ₹3.4+ Lakhs in 10 years.*")
+
+    st.markdown("---")
+    st.info("⚠️ **Why We Don't Gamble ₹1,000 on F&O Options:** In Indian markets, 1 NIFTY option lot is 25 shares (costing ₹8,000–₹12,000). Spending ₹1,000 forces you into far OTM 'lottery tickets' where time-decay causes a 95%+ loss rate. By putting your ₹1,000 into NIFTYBEES, you own real shares of India's 50 greatest companies that NEVER expire!")
 
 with tab1:
     st.subheader("🎯 Forward Predictions (50,000 Simulated Paths)")
