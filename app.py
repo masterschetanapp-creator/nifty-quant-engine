@@ -390,8 +390,31 @@ with tab2:
         ax2.grid(True, alpha=0.3)
         st.pyplot(fig2)
         
-        # Interactive Table
+        # Interactive Table with Plain-English Explanation
         st.markdown(f"### 📋 Complete {len(df_wf)}-Month Sequential Audit Table")
+        
+        with st.expander("📖 Click Here: Plain-English Guide to Every Column in This Table (For Normal Investors)", expanded=False):
+            st.markdown("""
+            Think of this table like an **11-year pilot logbook**. On the 29th of every single month, the AI made a forecast for the next 30 days without knowing the future. Exactly 30 days later, we recorded how it did and what it learned.
+            
+            | Column Name | What It Means in Simple Words | Example |
+            | :--- | :--- | :--- |
+            | **`Month`** | Which monthly test cycle this was (from Month 1 in 2015 to Month 131 today). | `53` (March 2020 COVID crash) |
+            | **`Origin_Date`** | The day the AI made the prediction. It only knew past data up to this exact date. | `2021-10-29` |
+            | **`Target_Date`** | The check-in day (approx. 30 days later) when actual results were revealed. | `2021-11-29` |
+            | **`Origin_Close`** | The price of NIFTY 50 on the day the AI made its prediction. | `17,671.65` |
+            | **`Actual_Close`** | Where NIFTY 50 actually closed 30 days later. | `17,053.30` |
+            | **`Predicted_%`** | What the AI predicted NIFTY would do over the next month. | `+1.85%` (AI predicted a +1.85% rise) |
+            | **`Actual_%`** | What NIFTY actually did in the real world. | `-3.50%` (Market actually fell by -3.50%) |
+            | **`Predicted_Level`** | The exact target price level the AI aimed for. | `17,998` |
+            | **`Abs_Error_pp`** | The "gap" or distance between prediction and reality (smaller is better). | `1.20 pp` (Within 1.2% of reality = Great hit!) |
+            | **`Direction_Hit`** | **The Big Test:** Did it get the UP/DOWN direction right? | **`YES`** = AI was right on direction (Won 85 of 131 months!). **`NO`** = Surprise shock flipped the market. |
+            | **`Inside_80%_Band`** | Did NIFTY stay inside the AI's safe predicted boundary? | **`YES`** = Normal market behavior. **`NO`** = Extreme catastrophe or sudden surge. |
+            | **`Lower_P10 / Upper_P90`** | The AI's Safe Corridor (floor and ceiling range for the month). | `16,500 to 18,200` |
+            | **`Regime`** | The mood/weather of the market that month. | 🟢 Value Reversal (Dip buy), 🔵 Expansion (Calm bull), 🟠 Pullback, 🔴 Trap (Danger) |
+            | **`Adaptive_Bias_pp`** | **The AI's Memory:** The self-correction adjustment from past mistakes. | `-0.25 pp` (AI slightly lowered its next guess because previous month was too high) |
+            """)
+            
         st.dataframe(df_wf, hide_index=True, use_container_width=True)
     else:
         st.warning("Historical walk-forward data file not found.")
