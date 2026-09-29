@@ -1,15 +1,15 @@
 ================================================================================
 AUTONOMOUS EQUITY PREDICTION & SELF-EVOLUTION REPORT
-Run Timestamp: 2026-09-29 12:45:04 IST
+Run Timestamp: 2026-09-29 08:33:52 IST
 ================================================================================
 
 1. MARKET STATE DIAGNOSTICS:
 -----------------------------
 • Origin Date:               2026-09-29
-• Current Nifty 50 Close:    22,668.70
+• Current Nifty 50 Close:    22,650.15
 • Active Macro Regime:       Value Reversal & Oversold Asymmetry (Bullish Dip-Buying)
-• 12-Month Drawdown:         -13.90%
-• 120-Day Momentum:          -5.54%
+• 12-Month Drawdown:         -13.97%
+• 120-Day Momentum:          -5.61%
 • Self-Adapted Bias:         +0.0000 pp
 
 2. SELF-EVOLUTION AUDIT LOG:
@@ -20,22 +20,22 @@ No pending prior forecasts due for verification today.
 -------------------------------------------
 [A] 1-MONTH HORIZON (Target Date ~2026-10-30):
     • Expected Move:         +1.32%
-    • Target Level (Median): 22,967
-    • 80% Confidence Band:   21,728 to 24,114
-    • 90% Confidence Band:   21,296 to 24,475
+    • Target Level (Median): 22,948
+    • 80% Confidence Band:   21,705 to 24,098
+    • 90% Confidence Band:   21,272 to 24,462
     • Probability of Up-End: 62.9%
-    • Chance of 5% Dip Path: 20.2%
+    • Chance of 5% Dip Path: 20.3%
 
 [B] 3-MONTH HORIZON (Quarterly):
     • Expected Move:         +3.63%
-    • Target Level:          23,490
-    • 80% Confidence Band:   21,317 to 25,630
+    • Target Level:          23,472
+    • 80% Confidence Band:   21,298 to 25,611
     • Probability of Up-End: 69.3%
 
 [C] 6-MONTH HORIZON (Structural):
     • Expected Move:         +7.10%
-    • Target Level:          24,277
-    • 80% Confidence Band:   21,108 to 27,511
+    • Target Level:          24,258
+    • 80% Confidence Band:   21,091 to 27,490
     • Probability of Up-End: 74.6%
 
 4. CROSS-SECTIONAL ROTATION STRATEGY:
@@ -47,6 +47,6 @@ No pending prior forecasts due for verification today.
 • FMCG:           UNDERWEIGHT (-4% to -6% expected)         -> Negative yield spread.
 
 ================================================================================
-Evolution Ledger updated: 'C:\Users\HP\Desktop\Equity model\model_ledger.json'
-Report saved:             'C:\Users\HP\Desktop\Equity model\Autopilot_Report_2026-09-29.txt'
+Evolution Ledger updated: '/home/runner/work/nifty-quant-engine/nifty-quant-engine/model_ledger.json'
+Report saved:             '/home/runner/work/nifty-quant-engine/nifty-quant-engine/Autopilot_Report_2026-09-29.txt'
 ================================================================================
