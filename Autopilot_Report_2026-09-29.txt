@@ -1,6 +1,6 @@
 ================================================================================
 AUTONOMOUS EQUITY PREDICTION & SELF-EVOLUTION REPORT (RS-BAQE v2.0)
-Run Timestamp: 2026-09-29 16:11:58 IST
+Run Timestamp: 2026-09-29 16:35:52 IST
 ================================================================================
 
 1. MARKET STATE DIAGNOSTICS:
@@ -48,6 +48,6 @@ No pending prior forecasts due for verification today.
 • FMCG:           UNDERWEIGHT (-4% to -6% expected)         -> Negative yield spread.
 
 ================================================================================
-Evolution Ledger updated: 'C:\Users\HP\Desktop\Equity model\model_ledger.json'
-Report saved:             'C:\Users\HP\Desktop\Equity model\Autopilot_Report_2026-09-29.txt'
+Evolution Ledger updated: '/home/runner/work/nifty-quant-engine/nifty-quant-engine/model_ledger.json'
+Report saved:             '/home/runner/work/nifty-quant-engine/nifty-quant-engine/Autopilot_Report_2026-09-29.txt'
 ================================================================================
