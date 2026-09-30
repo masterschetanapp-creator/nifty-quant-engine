@@ -263,6 +263,39 @@ def run_autonomous_cycle():
         "status": "PENDING"
     }
     ledger.setdefault("forecast_history", []).append(new_forecast_entry)
+    
+    # Lock the official active monthly forecast for the entire upcoming 30 days
+    ledger["active_monthly_forecast"] = {
+        "origin_date": latest_date_str,
+        "origin_close": round(float(latest_close), 2),
+        "target_date": target_1m_date,
+        "nifty_regime": regime,
+        "nifty_1m": {
+            "predicted_pct": fc_1m["median_pct"],
+            "target_level": fc_1m["median_level"],
+            "p10": fc_1m["p10_p90_range"][0],
+            "p90": fc_1m["p10_p90_range"][1],
+            "p05": fc_1m["p05_p95_range"][0],
+            "p95": fc_1m["p05_p95_range"][1],
+            "p_up": fc_1m["p_up"],
+            "p_dip_5": fc_1m["p_dip_5"]
+        },
+        "nifty_3m": {
+            "predicted_pct": fc_3m["median_pct"],
+            "target_level": fc_3m["median_level"],
+            "p10": fc_3m["p10_p90_range"][0],
+            "p90": fc_3m["p10_p90_range"][1],
+            "p_up": fc_3m["p_up"]
+        },
+        "nifty_6m": {
+            "predicted_pct": fc_6m["median_pct"],
+            "target_level": fc_6m["median_level"],
+            "p10": fc_6m["p10_p90_range"][0],
+            "p90": fc_6m["p10_p90_range"][1],
+            "p_up": fc_6m["p_up"]
+        },
+        "status": "LOCKED_FOR_MONTH"
+    }
     save_ledger(ledger)
     
     report_file = os.path.join(BASE_DIR, f"Autopilot_Report_{latest_date_str}.txt")

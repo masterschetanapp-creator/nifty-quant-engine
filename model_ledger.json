@@ -105,5 +105,48 @@
       "rmse_pp": 5.021,
       "coverage_80pct": 87.0
     }
+  },
+  "active_monthly_forecast": {
+    "cycle_month": 132,
+    "origin_date": "2026-09-29",
+    "origin_close": 22716.2,
+    "target_date": "2026-10-30",
+    "nifty_regime": "Value Reversal & Asymmetric Bounce (Bullish Rebound Bias)",
+    "nifty_1m": {
+      "predicted_pct": 2.24,
+      "target_level": 23226,
+      "p10": 21967,
+      "p90": 24389,
+      "p05": 21530,
+      "p95": 24755,
+      "p_up": 71.0,
+      "p_dip_5": 17.2
+    },
+    "nifty_3m": {
+      "predicted_pct": 6.48,
+      "target_level": 24189,
+      "p10": 21931,
+      "p90": 26413,
+      "p_up": 80.3
+    },
+    "nifty_6m": {
+      "predicted_pct": 13.08,
+      "target_level": 25686,
+      "p10": 22296,
+      "p90": 29151,
+      "p_up": 87.0
+    },
+    "gold_1m": {
+      "origin_date": "2026-09-29",
+      "origin_close": 121.17,
+      "target_date": "2026-10-30",
+      "predicted_pct": 0.68,
+      "target_level": 122.0,
+      "p10": 114.21,
+      "p90": 129.78,
+      "regime": "Gold Value Dip Accumulation",
+      "p_up": 60.3
+    },
+    "status": "LOCKED_FOR_MONTH"
   }
 }

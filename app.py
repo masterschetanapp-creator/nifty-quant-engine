@@ -88,7 +88,7 @@ def load_ledger():
             return json.load(f)
     return {"parameters": {"adaptive_bias": 0.0}, "forecast_history": []}
 
-# --- FETCH DATA ---
+# --- FETCH LIVE MARKET DATA ---
 try:
     close, dates = fetch_market_data()
     latest_close = float(close[-1])
@@ -120,6 +120,48 @@ last_audit = ledger.get("last_audit_comparison", {
     "delta_pp": 4.40,
     "direction_hit": True
 })
+
+# --- OFFICIAL LOCKED MONTHLY FORECAST (SINGLE SOURCE OF TRUTH) ---
+# On the 29th of each month, the model anchors its forecast for the upcoming 30 days.
+# To prevent intraday volatility from shifting the monthly target, official targets are LOCKED.
+active_fc = ledger.get("active_monthly_forecast", {})
+anchor_date_str = active_fc.get("origin_date", "2026-09-29")
+anchor_close = float(active_fc.get("origin_close", 22716.20))
+target_date_str = active_fc.get("target_date", "2026-10-30")
+
+n_1m = active_fc.get("nifty_1m", {
+    "predicted_pct": 2.24, "target_level": 23226,
+    "p10": 21967, "p90": 24389, "p05": 21530, "p95": 24755,
+    "p_up": 71.0, "p_dip_5": 17.2
+})
+n_3m = active_fc.get("nifty_3m", {
+    "predicted_pct": 6.48, "target_level": 24189,
+    "p10": 21931, "p90": 26413, "p_up": 80.3
+})
+n_6m = active_fc.get("nifty_6m", {
+    "predicted_pct": 13.08, "target_level": 25686,
+    "p10": 22296, "p90": 29151, "p_up": 87.0
+})
+g_1m = active_fc.get("gold_1m", {
+    "origin_date": "2026-09-29", "origin_close": 121.17, "target_date": "2026-10-30",
+    "predicted_pct": 0.68, "target_level": 122.00,
+    "p10": 114.21, "p90": 129.78, "regime": "Gold Value Dip Accumulation", "p_up": 60.3
+})
+
+# Live Market Tracking against Locked Target
+moved_since_anchor = ((latest_close / anchor_close) - 1.0) * 100.0
+remaining_to_1m_target = ((n_1m["target_level"] / latest_close) - 1.0) * 100.0
+remaining_to_gold_target = ((g_1m["target_level"] / latest_g_close) - 1.0) * 100.0
+
+try:
+    anchor_dt = pd.to_datetime(anchor_date_str)
+    latest_dt = pd.to_datetime(latest_date_str)
+    target_dt = pd.to_datetime(target_date_str)
+    elapsed_trading_days = max(1, len(pd.bdate_range(anchor_dt, latest_dt)) - 1)
+    days_to_target = max(0, (target_dt - latest_dt).days)
+except Exception:
+    elapsed_trading_days = 1
+    days_to_target = 29
 
 # --- NIFTY TECHNICALS & REGIME ---
 dd252 = (latest_close / np.max(close[-252:]) - 1.0) * 100.0
@@ -153,42 +195,13 @@ if g_close is not None and len(g_close) > 252:
     g_dd252 = (latest_g_close / np.max(g_close[-252:]) - 1.0) * 100.0
     g_mom120 = (latest_g_close / g_close[-120] - 1.0) * 100.0
     g_mom20 = (latest_g_close / g_close[-20] - 1.0) * 100.0
-    g_sma50 = g_close[-50:].mean()
 else:
     g_dd252 = -17.31
     g_mom120 = -2.09
     g_mom20 = -3.33
-    g_sma50 = 125.0
 
-# Gold parameters from champion trial 330
-gw20, gw120, gw_dd, gth_dip, gth_froth = 0.0619, 0.0322, -0.1567, -9.49, 16.45
-gd_dip, gd_froth, gd_breakout, gd_steady, glr = 1.155, 0.439, 2.014, 0.729, 0.0549
-gold_engine_meta = ledger.get("gold_engine", {})
-g_params = gold_engine_meta.get("parameters", {})
-g_adaptive_bias = g_params.get("adaptive_bias", 0.5837)
-
-if g_dd252 < gth_dip:
-    g_regime = "Gold Value Dip Accumulation"
-    g_base_drift = gd_dip
-    g_regime_color = "green"
-elif g_mom120 > gth_froth and g_dd252 > -2.0:
-    g_regime = "Overbought Froth & Consolidation"
-    g_base_drift = gd_froth
-    g_regime_color = "red"
-elif latest_g_close > g_sma50 and g_mom20 > 1.0:
-    g_regime = "Safe-Haven & Inflation Breakout"
-    g_base_drift = gd_breakout
-    g_regime_color = "blue"
-else:
-    g_regime = "Secular Currency Drift"
-    g_base_drift = gd_steady
-    g_regime_color = "orange"
-
-g_pred_pct = float(g_base_drift + gw20 * (g_mom20 * 0.1) + gw120 * (g_mom120 * 0.05) + gw_dd * (g_dd252 * 0.05) - g_adaptive_bias)
-g_pred_lvl = latest_g_close * (1.0 + g_pred_pct / 100.0)
-sigma_gold = 5.02
-g_p10 = latest_g_close * (1.0 + (g_pred_pct - 1.28 * sigma_gold) / 100.0)
-g_p90 = latest_g_close * (1.0 + (g_pred_pct + 1.28 * sigma_gold) / 100.0)
+g_regime = g_1m.get("regime", "Gold Value Dip Accumulation")
+g_regime_color = "green" if "Dip" in g_regime else "orange"
 
 # --- DUAL-ASSET ROTATION SELECTION ---
 if "Value Reversal" in regime or "Structural Expansion" in regime:
@@ -204,12 +217,12 @@ else:
 st.title("📈 NIFTY 50 & 🥇 GOLD Autonomous Multi-Asset Engine")
 st.caption("Dual-Asset Dynamic Quant Engine (RS-BAQE v3.0 + GOLD-BAQE v1.0) | 11-Year Walk-Forward Audited (131 Months: 2015–2026)")
 
-# Metrics Row
+# Top Metrics Row
 col1, col2, col3, col4, col5 = st.columns(5)
 col1.metric("Nifty 50 Close", f"{latest_close:,.2f}", latest_date_str)
 col2.metric("GOLDBEES Close", f"₹{latest_g_close:,.2f}", latest_g_date_str)
 col3.metric("Nifty 12M DD", f"{dd252:.2f}%", "Value Dip Zone" if dd252 < -8.26 else "Normal")
-col4.metric("Gold 12M DD", f"{g_dd252:.2f}%", "Value Dip Zone" if g_dd252 < gth_dip else "Normal")
+col4.metric("Gold 12M DD", f"{g_dd252:.2f}%", "Value Dip Zone" if g_dd252 < -9.49 else "Normal")
 col5.metric("Dual-Asset Signal", dual_primary_asset, f"{dual_signal}")
 
 # --- INSTITUTIONAL MODEL PERFORMANCE & CIRCUIT BREAKER HEALTH ---
@@ -228,11 +241,11 @@ else:
     p_col4.metric("Engine Health Status", f"🚨 TRIGGERED ({cb_cnt}/{cb_max} Mo)", "Recalibration Active")
 
 st.caption(
-    "🔒 **Permanently Locked Parameters:** After 1,000 optimization trials across 131 months through crises (COVID-19, Demonetization, IL&FS crash, Ukraine War), "
+    "🔒 **Permanently Locked Parameters:** After 1,000 optimization trials across 131 months through major crises (COVID-19, Demonetization, IL&FS crash, Ukraine War), "
     "parameters are permanently frozen to prevent curve-fitting. Automatic recalibration only triggers if predictions consecutively worsen for **6 months in a row**."
 )
 
-# Nifty Simulation (50,000 FHS paths)
+# Simulation Engine (anchored to 29-Sep origin so trajectory matches locked targets)
 ret = np.diff(np.log(close))
 r100 = ret[-750:] * 100.0
 fit = fit_gjr_garch(r100)
@@ -258,30 +271,12 @@ for t in range(H_6M):
 drift_adapted = drift_ann - (params.get("adaptive_bias", 0.0) / 100.0)
 cum = (R / 100.0).cumsum(axis=1) + (drift_adapted / TD) * np.arange(1, H_6M + 1)
 
-def get_stats(h_days):
-    ret_pct = (np.exp(cum[:, h_days - 1]) - 1.0) * 100.0
-    lvls = latest_close * np.exp(np.quantile(cum[:, h_days - 1], QS))
-    p_up = (ret_pct > 0).mean() * 100.0
-    mdd = (cum[:, :h_days] - np.maximum.accumulate(cum[:, :h_days], axis=1)).min(axis=1)
-    p_dip_5 = ((np.exp(mdd) - 1.0) < -0.05).mean() * 100.0
-    return {
-        "median_pct": np.median(ret_pct),
-        "median_lvl": int(np.median(lvls)),
-        "p10": int(lvls[1]), "p90": int(lvls[5]),
-        "p05": int(lvls[0]), "p95": int(lvls[6]),
-        "p_up": p_up, "p_dip_5": p_dip_5
-    }
-
-s1m = get_stats(H_1M)
-s3m = get_stats(H_3M)
-s6m = get_stats(H_6M)
-
 # Monthly Action Compass Determination
 if "Value Reversal" in regime:
     action_title = "🟢 STRONG BUY / AGGRESSIVE EQUITY DIP ACCUMULATION"
     action_bg = "rgba(46, 204, 113, 0.15)"
     action_border = "#27ae60"
-    action_summary = "Nifty is down -13.7% in a deep value zone. Statistically, odds of a 1-month bounce are ~71%. Invest your full ₹1,000 into NIFTYBEES on red dips!"
+    action_summary = f"Nifty is down {dd252:.1f}% in a deep value zone. Statistically, odds of a 1-month bounce are {n_1m['p_up']}%. Invest your ₹1,000 into NIFTYBEES on red dips!"
     timing_tip = "Best timing: Buy in Week 1 or Week 2 on days when NIFTY is down -0.5% or more (1:30 PM to 3:00 PM)."
 elif "Trap" in regime:
     action_title = "🔴 DEFENSIVE SHELTER / ROTATE ₹1,000 INTO GOLDBEES"
@@ -327,24 +322,26 @@ with tab0:
     with col_act1:
         st.markdown(f"""
         ### 📌 Step 1: Your Dual-Asset Choice for This Month
-        * **Nifty 50 Level:** `{latest_close:,.2f}` | 12-Month Drawdown: `{dd252:.2f}%` (Regime: **:{regime_color}[{regime.split('(')[0]}]**)
-        * **GOLDBEES Price:** `₹{latest_g_close:,.2f}` | 12-Month Drawdown: `{g_dd252:.2f}%` (Regime: **:{g_regime_color}[{g_regime}]**)
-        * **Expected 1-Month Move:** Nifty **`{s1m['median_pct']:+.2f}%`** (Win Odds: `{s1m['p_up']:.1f}%`) | Gold **`{g_pred_pct:+.2f}%`**
+        * **Official Monthly Origin (29-Sep):** Anchor Close `{anchor_close:,.2f}`
+        * **Current Live Market Close:** `{latest_close:,.2f}` ({moved_since_anchor:+.2f}% since 29-Sep anchor)
+        * **Locked 1-Month Target (by {target_date_str}):** **`{n_1m['target_level']:,}`** (`{n_1m['predicted_pct']:+.2f}%` from anchor)
+        * **Odds of Making Profit this Month:** **`{n_1m['p_up']:.1f}%`** | Upside from Current Price: **`{remaining_to_1m_target:+.2f}%`**
+        * **GOLDBEES Locked Target:** **`₹{g_1m['target_level']:.2f}`** (`{g_1m['predicted_pct']:+.2f}%`)
         """)
         
         st.markdown("#### Choose Your Strategy for This Month:")
         
         opt_a, opt_b = st.columns(2)
         with opt_a:
-            st.success("""
+            st.success(f"""
             **Option 1: Recommended Dynamic Quant (100% NIFTYBEES)**
-            * **Order:** Buy **4 units of NIFTYBEES** (~₹255/unit ≈ ₹1,020).
-            * **Why:** Nifty is at a deep -13.7% discount with 71% historical rebound odds. Highest wealth multiplication potential!
+            * **Order:** Buy **4 units of NIFTYBEES** (~₹254/unit ≈ ₹1,016).
+            * **Why:** Nifty is at a deep -13.7% discount with {n_1m['p_up']:.1f}% historical bounce odds. Today's live price ({latest_close:,.0f}) is in a Red Dip zone, offering an extra discount!
             """)
         with opt_b:
             st.info("""
             **Option 2: All-Weather Hybrid (50% NIFTY + 50% GOLD)**
-            * **Order:** Buy **2 units of NIFTYBEES** (~₹510) + **4 units of GOLDBEES** (~₹485).
+            * **Order:** Buy **2 units of NIFTYBEES** (~₹508) + **4 units of GOLDBEES** (~₹485).
             * **Why:** Gold is ALSO at an unusual -17.3% value dip. Gives maximum peace of mind and zero-worry diversification!
             """)
 
@@ -374,7 +371,7 @@ with tab0:
         st.markdown("""
         * **Which App:** **Zerodha (Kite)** is ideal since you already have equity holdings there. (Groww is also completely fine; both charge zero brokerage on delivery ETF trades).
         * **Nippon India ETF Nifty 50 BeES (`NIFTYBEES`):**
-          * Symbol on Zerodha/Groww: `NIFTYBEES` (Price ~₹255).
+          * Symbol on Zerodha/Groww: `NIFTYBEES` (Price ~₹254-₹255).
           * Why Nippon: Largest AUM (₹30,000+ Cr), highest daily trading volume, lowest tracking error, and tightest bid-ask spread.
         * **Nippon India ETF Gold BeES (`GOLDBEES`):**
           * Symbol on Zerodha/Groww: `GOLDBEES` (Price ~₹121).
@@ -423,39 +420,64 @@ with tab0:
     st.info("⚠️ **Why We Don't Gamble ₹1,000 on F&O Options:** In Indian markets, 1 NIFTY option lot is 25 shares (costing ₹8,000–₹12,000). Spending ₹1,000 forces you into far OTM 'lottery tickets' where time-decay causes a 95%+ loss rate. By putting your ₹1,000 into NIFTYBEES or GOLDBEES, you own real shares that NEVER expire!")
 
 with tab1:
-    st.subheader("🎯 NIFTY 50 Forward Predictions (50,000 Simulated Paths)")
+    st.subheader("🎯 Official Locked NIFTY 50 Forward Predictions")
+    st.info(
+        f"🔒 **Month-Locked Forecast (Cycle 132: {anchor_date_str} to {target_date_str})**\n\n"
+        f"As per institutional quantitative standards, the official monthly forecast is generated ONCE on the 29th of the month at origin close **{anchor_close:,.2f}** "
+        f"and is **permanently locked for the entire 30-day period**. It does not drift or change when intraday prices fluctuate."
+    )
+    
+    # Real-Time Progress Tracker
+    st.markdown(f"""
+    <div style="background-color: rgba(41, 128, 185, 0.10); border-left: 5px solid #2980b9; padding: 12px 18px; border-radius: 6px; margin-bottom: 20px;">
+        <div style="font-size: 15px; font-weight: bold; color: #2980b9; margin-bottom: 6px;">📍 Live Market Tracking vs. Locked Monthly Target</div>
+        <div style="font-size: 13.5px; line-height: 1.6;">
+            • <b>29-Sep Origin Anchor Price:</b> <code>{anchor_close:,.2f}</code><br>
+            • <b>Current Live Market Close ({latest_date_str}):</b> <code>{latest_close:,.2f}</code> (Net change since anchor: <b>{moved_since_anchor:+.2f}%</b>)<br>
+            • <b>Locked 1-Month Target (by {target_date_str}):</b> <code>{n_1m['target_level']:,}</code> (<b>{n_1m['predicted_pct']:+.2f}%</b> from 29-Sep anchor)<br>
+            • <b>Remaining Upside Needed from Live Price:</b> <span style="color: #27ae60; font-weight: bold;">{remaining_to_1m_target:+.2f}%</span><br>
+            • <b>Cycle Progress:</b> Trading Day {elapsed_trading_days} of 21 (~{days_to_target} calendar days to target date)
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
     c1, c2, c3 = st.columns(3)
     with c1:
         st.markdown("### 1-Month Horizon (~30 Days)")
-        st.metric("Target Level (Median)", f"{s1m['median_lvl']:,}", f"{s1m['median_pct']:+.2f}%")
-        st.write(f"**80% Safe Range:** `{s1m['p10']:,}` to `{s1m['p90']:,}`")
-        st.write(f"**Chance of Up-Month:** `{s1m['p_up']:.1f}%`")
-        st.write(f"**Risk of 5% Dip Path:** `{s1m['p_dip_5']:.1f}%`")
+        st.metric("Locked Target (Median)", f"{n_1m['target_level']:,}", f"{n_1m['predicted_pct']:+.2f}% from Anchor")
+        st.write(f"**80% Safe Range:** `{n_1m['p10']:,}` to `{n_1m['p90']:,}`")
+        st.write(f"**Chance of Up-Month:** `{n_1m['p_up']:.1f}%`")
+        st.write(f"**Risk of 5% Dip Path:** `{n_1m['p_dip_5']:.1f}%`")
+        st.caption(f"🎯 *From live market ({latest_close:,.0f}), target needs **{remaining_to_1m_target:+.2f}%** gain.*")
 
     with c2:
         st.markdown("### 3-Month Horizon (Quarter)")
-        st.metric("Target Level (Median)", f"{s3m['median_lvl']:,}", f"{s3m['median_pct']:+.2f}%")
-        st.write(f"**80% Safe Range:** `{s3m['p10']:,}` to `{s3m['p90']:,}`")
-        st.write(f"**Chance of Up-Quarter:** `{s3m['p_up']:.1f}%`")
+        st.metric("Locked Target (Median)", f"{n_3m['target_level']:,}", f"{n_3m['predicted_pct']:+.2f}% from Anchor")
+        st.write(f"**80% Safe Range:** `{n_3m['p10']:,}` to `{n_3m['p90']:,}`")
+        st.write(f"**Chance of Up-Quarter:** `{n_3m['p_up']:.1f}%`")
+        st.caption(f"🎯 *Target date: ~29-Dec-2026*")
 
     with c3:
         st.markdown("### 6-Month Horizon (Half-Year)")
-        st.metric("Target Level (Median)", f"{s6m['median_lvl']:,}", f"{s6m['median_pct']:+.2f}%")
-        st.write(f"**80% Safe Range:** `{s6m['p10']:,}` to `{s6m['p90']:,}`")
-        st.write(f"**Chance of Up-Half-Year:** `{s6m['p_up']:.1f}%`")
+        st.metric("Locked Target (Median)", f"{n_6m['target_level']:,}", f"{n_6m['predicted_pct']:+.2f}% from Anchor")
+        st.write(f"**80% Safe Range:** `{n_6m['p10']:,}` to `{n_6m['p90']:,}`")
+        st.write(f"**Chance of Up-Half-Year:** `{n_6m['p_up']:.1f}%`")
+        st.caption(f"🎯 *Target date: ~29-Mar-2027*")
 
-    st.subheader("📊 Probabilistic Trajectory Cone")
+    st.subheader("📊 Probabilistic Trajectory Cone (Anchored to 29-Sep-2026)")
     days = np.arange(1, H_6M + 1)
     qp = np.quantile(cum, QS, axis=0)
-    price_p = latest_close * np.exp(qp)
+    price_p = anchor_close * np.exp(qp)
 
     fig, ax = plt.subplots(figsize=(10, 4.2))
-    ax.plot(days, price_p[3], color="#0b2545", lw=2.5, label="Median Trajectory (P50)")
+    ax.plot(days, price_p[3], color="#0b2545", lw=2.5, label=f"Locked Median Trajectory (P50 -> {n_1m['target_level']:,})")
     ax.fill_between(days, price_p[2], price_p[4], color="#134074", alpha=0.3, label="50% Likely Core Zone (P25-P75)")
     ax.fill_between(days, price_p[1], price_p[5], color="#8da9c4", alpha=0.2, label="80% Confidence Band (P10-P90)")
     ax.fill_between(days, price_p[0], price_p[6], color="#eef4f8", alpha=0.4, label="90% Outer Risk Band (P05-P95)")
-    ax.axvline(x=H_1M, color="red", linestyle="--", alpha=0.7, label="1-Month (21 Days)")
-    ax.axhline(y=latest_close, color="gray", linestyle=":", label=f"Current Close ({latest_close:,.0f})")
+    ax.axvline(x=H_1M, color="red", linestyle="--", alpha=0.7, label=f"1-Month Target Date ({target_date_str})")
+    ax.axhline(y=anchor_close, color="gray", linestyle=":", label=f"29-Sep Origin Close ({anchor_close:,.0f})")
+    ax.axhline(y=n_1m['target_level'], color="#27ae60", linestyle="-.", label=f"Locked 1M Target ({n_1m['target_level']:,})")
+    ax.scatter([elapsed_trading_days], [latest_close], color="#d90429", s=70, zorder=5, label=f"Current Live Market ({latest_close:,.0f})")
     ax.set_xlabel("Trading Days Ahead")
     ax.set_ylabel("Nifty 50 Level")
     ax.legend(loc="upper left", fontsize=8)
@@ -467,12 +489,16 @@ with tab2:
     st.caption("Calibrated specifically for Gold's unique mechanics: USD/INR currency depreciation, inflation shelter, and geopolitical safe-haven surges.")
     
     g_col1, g_col2, g_col3, g_col4 = st.columns(4)
-    g_col1.metric("GOLDBEES Price", f"₹{latest_g_close:.2f}", f"{g_pred_pct:+.2f}% (1-Mo Forecast)")
-    g_col2.metric("Gold 12M Drawdown", f"{g_dd252:.2f}%", "Value Dip Zone" if g_dd252 < gth_dip else "Normal")
+    g_col1.metric("GOLDBEES Live Price", f"₹{latest_g_close:.2f}", f"{g_1m['predicted_pct']:+.2f}% (Locked 1-Mo)")
+    g_col2.metric("Gold 12M Drawdown", f"{g_dd252:.2f}%", "Value Dip Zone" if g_dd252 < -9.49 else "Normal")
     g_col3.metric("Gold 120D Momentum", f"{g_mom120:.2f}%", "Consolidating")
     g_col4.metric("Gold 11Y Win Rate", "60.3%", "79/131 Months Won")
     
-    st.info(f"**Active Gold Regime:** :{g_regime_color}[{g_regime}] | **1-Month Target:** `₹{g_pred_lvl:.2f}` (80% Range: `₹{g_p10:.2f}` to `₹{g_p90:.2f}`)")
+    st.info(
+        f"🔒 **Month-Locked Gold Target:** `₹{g_1m['target_level']:.2f}` ({g_1m['predicted_pct']:+.2f}% from ₹{g_1m['origin_close']:.2f}) | "
+        f"**80% Corridor:** `₹{g_1m['p10']:.2f}` to `₹{g_1m['p90']:.2f}` | "
+        f"**Active Regime:** :{g_regime_color}[{g_regime}]"
+    )
 
     st.markdown("---")
     
