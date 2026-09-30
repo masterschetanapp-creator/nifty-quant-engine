@@ -1,0 +1,132 @@
+Month,Date,Chosen_Asset,Nifty_Regime,Gold_Regime,Asset_Monthly_Return_%,Total_Invested_INR,Portfolio_Wealth_INR,Profit_INR
+1,2015-10-29,NIFTYBEES,Value Reversal & Bounce,Safe-Haven & Inflation Breakout,-2.08,1000.0,979.16,-20.84
+2,2015-11-27,NIFTYBEES,Value Reversal & Bounce,Gold Value Dip Accumulation,-0.17,2000.0,1975.73,-24.27
+3,2015-12-29,NIFTYBEES,Value Reversal & Bounce,Gold Value Dip Accumulation,-4.61,3000.0,2838.6,-161.4
+4,2016-01-29,NIFTYBEES,Value Reversal & Bounce,Safe-Haven & Inflation Breakout,-7.62,4000.0,3546.02,-453.98
+5,2016-02-29,NIFTYBEES,Value Reversal & Bounce,Safe-Haven & Inflation Breakout,8.73,5000.0,4942.87,-57.13
+6,2016-03-29,NIFTYBEES,Value Reversal & Bounce,Secular Currency Drift,3.33,6000.0,6140.63,140.63
+7,2016-04-29,NIFTYBEES,Value Reversal & Bounce,Safe-Haven & Inflation Breakout,3.91,7000.0,7419.76,419.76
+8,2016-05-27,NIFTYBEES,Structural Expansion & SIP Floor,Secular Currency Drift,0.58,8000.0,8468.64,468.64
+9,2016-06-29,NIFTYBEES,Structural Expansion & SIP Floor,Overbought Froth & Consolidation,5.3,9000.0,9970.11,970.11
+10,2016-07-29,NIFTYBEES,Structural Expansion & SIP Floor,Secular Currency Drift,-0.36,10000.0,10930.68,930.68
+11,2016-08-29,NIFTYBEES,Structural Expansion & SIP Floor,Secular Currency Drift,-0.19,11000.0,11908.23,908.23
+12,2016-09-29,GOLDBEES,Tactical Pullback,Safe-Haven & Inflation Breakout,-4.01,12000.0,12933.03,933.03
+13,2016-10-28,NIFTYBEES,Structural Expansion & SIP Floor,Secular Currency Drift,-5.74,13000.0,13159.56,159.56
+14,2016-11-29,NIFTYBEES,Value Reversal & Bounce,Secular Currency Drift,-0.47,14000.0,14059.39,59.39
+15,2016-12-29,NIFTYBEES,Value Reversal & Bounce,Gold Value Dip Accumulation,6.63,15000.0,16025.55,1025.55
+16,2017-01-27,NIFTYBEES,Structural Expansion & SIP Floor,Gold Value Dip Accumulation,2.76,16000.0,17497.86,1497.86
+17,2017-02-28,NIFTYBEES,Structural Expansion & SIP Floor,Safe-Haven & Inflation Breakout,2.98,17000.0,18994.42,1994.42
+18,2017-03-29,NIFTYBEES,Structural Expansion & SIP Floor,Gold Value Dip Accumulation,1.75,18000.0,20332.87,2332.87
+19,2017-04-28,NIFTYBEES,Structural Expansion & SIP Floor,Secular Currency Drift,3.23,19000.0,21988.85,2988.85
+20,2017-05-29,NIFTYBEES,Structural Expansion & SIP Floor,Gold Value Dip Accumulation,-1.05,20000.0,22741.14,2741.14
+21,2017-06-29,NIFTYBEES,Structural Expansion & SIP Floor,Gold Value Dip Accumulation,5.37,21000.0,24960.76,3960.76
+22,2017-07-28,NIFTYBEES,Structural Expansion & SIP Floor,Gold Value Dip Accumulation,-2.18,22000.0,25455.5,3455.5
+23,2017-08-29,GOLDBEES,Tactical Pullback,Safe-Haven & Inflation Breakout,-0.62,23000.0,26424.56,3424.56
+24,2017-09-29,GOLDBEES,Tactical Pullback,Secular Currency Drift,-1.45,24000.0,28720.24,4720.24
+25,2017-10-27,NIFTYBEES,Structural Expansion & SIP Floor,Secular Currency Drift,0.37,25000.0,29843.83,4843.83
+26,2017-11-29,NIFTYBEES,Structural Expansion & SIP Floor,Secular Currency Drift,1.63,26000.0,31275.24,5275.24
+27,2017-12-29,NIFTYBEES,Structural Expansion & SIP Floor,Secular Currency Drift,5.69,27000.0,34045.56,7045.56
+28,2018-01-29,NIFTYBEES,Structural Expansion & SIP Floor,Safe-Haven & Inflation Breakout,-5.73,28000.0,33225.49,5225.49
+29,2018-02-28,GOLDBEES,Tactical Pullback,Secular Currency Drift,0.57,29000.0,33156.74,4156.74
+30,2018-03-28,NIFTYBEES,Value Reversal & Bounce,Secular Currency Drift,5.72,30000.0,35945.14,5945.14
+31,2018-04-27,NIFTYBEES,Structural Expansion & SIP Floor,Safe-Haven & Inflation Breakout,-0.55,31000.0,36765.3,5765.3
+32,2018-05-29,NIFTYBEES,Structural Expansion & SIP Floor,Secular Currency Drift,0.76,32000.0,37907.56,5907.56
+33,2018-06-29,NIFTYBEES,Structural Expansion & SIP Floor,Secular Currency Drift,5.26,33000.0,40660.16,7660.16
+34,2018-07-27,NIFTYBEES,Structural Expansion & SIP Floor,Secular Currency Drift,3.67,34000.0,43097.91,9097.91
+35,2018-08-29,NIFTYBEES,Structural Expansion & SIP Floor,Safe-Haven & Inflation Breakout,-6.51,35000.0,41501.68,6501.68
+36,2018-09-28,GOLDBEES,Tactical Pullback,Secular Currency Drift,4.89,36000.0,40409.73,4409.73
+37,2018-10-29,NIFTYBEES,Value Reversal & Bounce,Safe-Haven & Inflation Breakout,5.93,37000.0,43329.22,6329.22
+38,2018-11-29,NIFTYBEES,Structural Expansion & SIP Floor,Secular Currency Drift,0.01,38000.0,44524.4,6524.4
+39,2018-12-28,NIFTYBEES,Structural Expansion & SIP Floor,Safe-Haven & Inflation Breakout,-1.91,39000.0,44939.69,5939.69
+40,2019-01-29,NIFTYBEES,Value Reversal & Bounce,Safe-Haven & Inflation Breakout,1.32,40000.0,46534.81,6534.81
+41,2019-02-28,NIFTYBEES,Structural Expansion & SIP Floor,Secular Currency Drift,7.2,41000.0,50339.93,9339.93
+42,2019-03-28,NIFTYBEES,Structural Expansion & SIP Floor,Secular Currency Drift,1.6,42000.0,52060.03,10060.03
+43,2019-04-26,NIFTYBEES,Structural Expansion & SIP Floor,Secular Currency Drift,0.91,43000.0,53501.09,10501.09
+44,2019-05-29,NIFTYBEES,Structural Expansion & SIP Floor,Safe-Haven & Inflation Breakout,-0.61,44000.0,54527.25,10527.25
+45,2019-06-28,NIFTYBEES,Structural Expansion & SIP Floor,Safe-Haven & Inflation Breakout,-5.09,45000.0,53109.24,8109.24
+46,2019-07-29,GOLDBEES,Tactical Pullback,Safe-Haven & Inflation Breakout,11.59,46000.0,53854.13,7854.13
+47,2019-08-29,NIFTYBEES,Value Reversal & Bounce,Overbought Froth & Consolidation,5.15,47000.0,57040.1,10040.1
+48,2019-09-27,NIFTYBEES,Structural Expansion & SIP Floor,Secular Currency Drift,2.38,48000.0,59402.75,11402.75
+49,2019-10-29,NIFTYBEES,Structural Expansion & SIP Floor,Safe-Haven & Inflation Breakout,2.28,49000.0,61551.08,12551.08
+50,2019-11-29,NIFTYBEES,Structural Expansion & SIP Floor,Secular Currency Drift,1.57,50000.0,63581.85,13581.85
+51,2019-12-27,NIFTYBEES,Structural Expansion & SIP Floor,Safe-Haven & Inflation Breakout,-0.95,51000.0,64354.1,13354.1
+52,2020-01-29,GOLDBEES,Tactical Pullback,Safe-Haven & Inflation Breakout,4.94,52000.0,61450.2,9450.2
+53,2020-02-28,NIFTYBEES,Value Reversal & Bounce,Safe-Haven & Inflation Breakout,-22.69,53000.0,50546.92,-2453.08
+54,2020-03-27,NIFTYBEES,Value Reversal & Bounce,Safe-Haven & Inflation Breakout,10.31,54000.0,56927.14,2927.14
+55,2020-04-29,NIFTYBEES,Value Reversal & Bounce,Safe-Haven & Inflation Breakout,0.28,55000.0,57724.4,2724.4
+56,2020-05-29,NIFTYBEES,Value Reversal & Bounce,Secular Currency Drift,7.64,56000.0,62813.37,6813.37
+57,2020-06-29,NIFTYBEES,Value Reversal & Bounce,Overbought Froth & Consolidation,8.63,57000.0,69411.66,12411.66
+58,2020-07-29,NIFTYBEES,Value Reversal & Bounce,Overbought Froth & Consolidation,3.97,58000.0,72409.29,14409.29
+59,2020-08-28,NIFTYBEES,Structural Expansion & SIP Floor,Secular Currency Drift,-3.65,59000.0,70899.5,11899.5
+60,2020-09-29,NIFTYBEES,Value Reversal & Bounce,Gold Value Dip Accumulation,4.0,60000.0,74390.39,14390.39
+61,2020-10-29,NIFTYBEES,Structural Expansion & SIP Floor,Gold Value Dip Accumulation,11.12,61000.0,82202.82,21202.82
+62,2020-11-27,GOLDBEES,Valuation Trap & Snapback,Gold Value Dip Accumulation,1.96,62000.0,88758.3,26758.3
+63,2020-12-29,GOLDBEES,Valuation Trap & Snapback,Gold Value Dip Accumulation,-2.36,63000.0,87810.68,24810.68
+64,2021-01-29,GOLDBEES,Tactical Pullback,Gold Value Dip Accumulation,-5.63,64000.0,93005.9,29005.9
+65,2021-02-26,NIFTYBEES,Structural Expansion & SIP Floor,Gold Value Dip Accumulation,-0.15,65000.0,93425.29,28425.29
+66,2021-03-26,NIFTYBEES,Structural Expansion & SIP Floor,Gold Value Dip Accumulation,2.67,66000.0,97228.58,31228.58
+67,2021-04-29,GOLDBEES,Valuation Trap & Snapback,Gold Value Dip Accumulation,3.68,67000.0,101802.05,34802.05
+68,2021-05-28,NIFTYBEES,Structural Expansion & SIP Floor,Gold Value Dip Accumulation,2.03,68000.0,104091.51,36091.51
+69,2021-06-29,NIFTYBEES,Structural Expansion & SIP Floor,Gold Value Dip Accumulation,0.19,69000.0,105586.95,36586.95
+70,2021-07-29,NIFTYBEES,Structural Expansion & SIP Floor,Gold Value Dip Accumulation,5.87,70000.0,111741.36,41741.36
+71,2021-08-27,NIFTYBEES,Structural Expansion & SIP Floor,Gold Value Dip Accumulation,6.02,71000.0,118414.31,47414.31
+72,2021-09-29,GOLDBEES,Valuation Trap & Snapback,Gold Value Dip Accumulation,3.7,72000.0,119717.39,47717.39
+73,2021-10-29,NIFTYBEES,Structural Expansion & SIP Floor,Safe-Haven & Inflation Breakout,-3.5,73000.0,117068.57,44068.57
+74,2021-11-29,GOLDBEES,Tactical Pullback,Secular Currency Drift,-0.29,74000.0,118976.42,44976.42
+75,2021-12-29,GOLDBEES,Tactical Pullback,Secular Currency Drift,-0.17,75000.0,119280.2,44280.2
+76,2022-01-28,GOLDBEES,Tactical Pullback,Secular Currency Drift,5.21,76000.0,119379.82,43379.82
+77,2022-02-28,NIFTYBEES,Value Reversal & Bounce,Safe-Haven & Inflation Breakout,3.16,77000.0,123845.06,46845.06
+78,2022-03-29,NIFTYBEES,Structural Expansion & SIP Floor,Safe-Haven & Inflation Breakout,-1.29,78000.0,123753.16,45753.16
+79,2022-04-29,GOLDBEES,Tactical Pullback,Safe-Haven & Inflation Breakout,-1.59,79000.0,119856.15,40856.15
+80,2022-05-27,NIFTYBEES,Value Reversal & Bounce,Secular Currency Drift,-3.38,80000.0,117303.1,37303.1
+81,2022-06-29,NIFTYBEES,Value Reversal & Bounce,Secular Currency Drift,8.6,81000.0,126893.62,45893.62
+82,2022-07-29,NIFTYBEES,Structural Expansion & SIP Floor,Secular Currency Drift,0.9,82000.0,128768.29,46768.29
+83,2022-08-29,NIFTYBEES,Structural Expansion & SIP Floor,Secular Currency Drift,-2.86,83000.0,126198.41,43198.41
+84,2022-09-29,NIFTYBEES,Value Reversal & Bounce,Secular Currency Drift,5.76,84000.0,133567.2,49567.2
+85,2022-10-28,NIFTYBEES,Structural Expansion & SIP Floor,Secular Currency Drift,4.67,85000.0,140763.26,55763.26
+86,2022-11-29,NIFTYBEES,Structural Expansion & SIP Floor,Safe-Haven & Inflation Breakout,-2.29,86000.0,139676.94,53676.94
+87,2022-12-29,GOLDBEES,Tactical Pullback,Safe-Haven & Inflation Breakout,4.66,87000.0,137901.28,50901.28
+88,2023-01-27,GOLDBEES,Tactical Pullback,Safe-Haven & Inflation Breakout,-2.81,88000.0,136262.29,48262.29
+89,2023-02-28,GOLDBEES,Tactical Pullback,Secular Currency Drift,6.92,89000.0,137519.11,48519.11
+90,2023-03-29,NIFTYBEES,Value Reversal & Bounce,Safe-Haven & Inflation Breakout,5.76,90000.0,145271.24,55271.24
+91,2023-04-28,NIFTYBEES,Structural Expansion & SIP Floor,Overbought Froth & Consolidation,2.95,91000.0,149766.87,58766.87
+92,2023-05-29,NIFTYBEES,Structural Expansion & SIP Floor,Secular Currency Drift,2.01,92000.0,152409.42,60409.42
+93,2023-06-28,NIFTYBEES,Structural Expansion & SIP Floor,Secular Currency Drift,3.55,93000.0,158525.45,65525.45
+94,2023-07-28,NIFTYBEES,Structural Expansion & SIP Floor,Safe-Haven & Inflation Breakout,-1.54,94000.0,157110.05,63110.05
+95,2023-08-29,GOLDBEES,Tactical Pullback,Secular Currency Drift,-1.38,95000.0,159740.09,64740.09
+96,2023-09-29,NIFTYBEES,Structural Expansion & SIP Floor,Secular Currency Drift,-3.01,96000.0,157976.44,61976.44
+97,2023-10-27,GOLDBEES,Tactical Pullback,Safe-Haven & Inflation Breakout,2.73,97000.0,166930.59,69930.59
+98,2023-11-29,NIFTYBEES,Structural Expansion & SIP Floor,Safe-Haven & Inflation Breakout,8.13,98000.0,179514.65,81514.65
+99,2023-12-29,NIFTYBEES,Structural Expansion & SIP Floor,Secular Currency Drift,0.03,99000.0,180170.88,81170.88
+100,2024-01-29,NIFTYBEES,Structural Expansion & SIP Floor,Secular Currency Drift,1.13,100000.0,182773.16,82773.16
+101,2024-02-29,NIFTYBEES,Structural Expansion & SIP Floor,Secular Currency Drift,1.57,101000.0,188333.18,87333.18
+102,2024-03-28,NIFTYBEES,Structural Expansion & SIP Floor,Safe-Haven & Inflation Breakout,1.42,102000.0,194195.75,92195.75
+103,2024-04-29,NIFTYBEES,Structural Expansion & SIP Floor,Overbought Froth & Consolidation,0.27,103000.0,195575.14,92575.14
+104,2024-05-29,NIFTYBEES,Structural Expansion & SIP Floor,Secular Currency Drift,5.75,104000.0,205589.37,101589.37
+105,2024-06-28,NIFTYBEES,Structural Expansion & SIP Floor,Secular Currency Drift,3.44,105000.0,211487.09,106487.09
+106,2024-07-29,NIFTYBEES,Structural Expansion & SIP Floor,Secular Currency Drift,1.27,106000.0,215773.59,109773.59
+107,2024-08-29,NIFTYBEES,Structural Expansion & SIP Floor,Safe-Haven & Inflation Breakout,4.08,107000.0,225869.65,118869.65
+108,2024-09-27,NIFTYBEES,Structural Expansion & SIP Floor,Safe-Haven & Inflation Breakout,-6.54,108000.0,215939.4,107939.4
+109,2024-10-29,GOLDBEES,Tactical Pullback,Safe-Haven & Inflation Breakout,-3.03,109000.0,213329.26,104329.26
+110,2024-11-29,NIFTYBEES,Structural Expansion & SIP Floor,Secular Currency Drift,-1.32,110000.0,211948.56,101948.56
+111,2024-12-27,NIFTYBEES,Value Reversal & Bounce,Secular Currency Drift,-2.73,111000.0,210243.02,99243.02
+112,2025-01-29,NIFTYBEES,Value Reversal & Bounce,Overbought Froth & Consolidation,-4.48,112000.0,205388.4,93388.4
+113,2025-02-28,NIFTYBEES,Value Reversal & Bounce,Safe-Haven & Inflation Breakout,6.3,113000.0,218579.99,105579.99
+114,2025-03-28,NIFTYBEES,Value Reversal & Bounce,Overbought Froth & Consolidation,3.47,114000.0,229106.0,115106.0
+115,2025-04-29,NIFTYBEES,Structural Expansion & SIP Floor,Safe-Haven & Inflation Breakout,2.04,115000.0,233328.55,118328.55
+116,2025-05-29,NIFTYBEES,Structural Expansion & SIP Floor,Secular Currency Drift,3.24,116000.0,240851.38,124851.38
+117,2025-06-27,NIFTYBEES,Structural Expansion & SIP Floor,Secular Currency Drift,-3.19,117000.0,236818.82,119818.82
+118,2025-07-29,GOLDBEES,Tactical Pullback,Secular Currency Drift,4.19,118000.0,236821.85,118821.85
+119,2025-08-29,GOLDBEES,Tactical Pullback,Overbought Froth & Consolidation,12.37,119000.0,245741.69,126741.69
+120,2025-09-29,NIFTYBEES,Structural Expansion & SIP Floor,Overbought Froth & Consolidation,5.76,120000.0,260070.78,140070.78
+121,2025-10-29,NIFTYBEES,Structural Expansion & SIP Floor,Safe-Haven & Inflation Breakout,0.57,121000.0,265020.9,144020.9
+122,2025-11-28,NIFTYBEES,Structural Expansion & SIP Floor,Safe-Haven & Inflation Breakout,-1.0,122000.0,269038.14,147038.14
+123,2025-12-29,NIFTYBEES,Structural Expansion & SIP Floor,Overbought Froth & Consolidation,-2.02,123000.0,286039.26,163039.26
+124,2026-01-29,GOLDBEES,Tactical Pullback,Overbought Froth & Consolidation,-10.19,124000.0,276114.56,152114.56
+125,2026-02-27,NIFTYBEES,Structural Expansion & SIP Floor,Gold Value Dip Accumulation,-9.37,125000.0,250096.1,125096.1
+126,2026-03-27,NIFTYBEES,Value Reversal & Bounce,Gold Value Dip Accumulation,5.95,126000.0,264254.33,138254.33
+127,2026-04-29,NIFTYBEES,Structural Expansion & SIP Floor,Gold Value Dip Accumulation,-2.61,127000.0,264550.18,137550.18
+128,2026-05-29,NIFTYBEES,Value Reversal & Bounce,Gold Value Dip Accumulation,1.69,128000.0,261315.8,133315.8
+129,2026-06-29,NIFTYBEES,Value Reversal & Bounce,Gold Value Dip Accumulation,1.27,129000.0,265004.06,136004.06
+130,2026-07-29,NIFTYBEES,Structural Expansion & SIP Floor,Gold Value Dip Accumulation,-0.31,130000.0,273891.61,143891.61
+131,2026-08-28,GOLDBEES,Tactical Pullback,Gold Value Dip Accumulation,-7.4,131000.0,257203.58,126203.58

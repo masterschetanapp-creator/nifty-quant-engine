@@ -82,19 +82,28 @@
         24389
       ],
       "status": "PENDING"
-    },
-    {
-      "origin_date": "2026-09-29",
-      "origin_close": 22716.19921875,
-      "target_date": "2026-10-30",
-      "horizon": "1-Month",
-      "predicted_median_pct": 2.24,
-      "predicted_median_level": 23226,
-      "predicted_80pct_range": [
-        21967,
-        24389
-      ],
-      "status": "PENDING"
     }
-  ]
+  ],
+  "gold_engine": {
+    "model_version": "GOLD-BAQE-v1.0-131Months",
+    "parameters": {
+      "adaptive_bias": 0.5837,
+      "gamma_learning_rate": 0.0549,
+      "w20_momentum": 0.0619,
+      "w120_momentum": 0.0322,
+      "w_dd_mean_reversion": -0.1567,
+      "th_gold_dip": -9.49,
+      "th_gold_froth": 16.45,
+      "drift_dip_pct": 1.155,
+      "drift_froth_pct": 0.439,
+      "drift_breakout_pct": 2.014,
+      "drift_steady_pct": 0.729
+    },
+    "benchmark_stats": {
+      "hit_rate_pct": 60.3,
+      "mae_pp": 3.717,
+      "rmse_pp": 5.021,
+      "coverage_80pct": 87.0
+    }
+  }
 }
