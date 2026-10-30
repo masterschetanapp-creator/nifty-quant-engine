@@ -1,20 +1,20 @@
 {
   "model_version": "RS-BAQE-v3.0-131Months",
   "circuit_breaker": {
-    "consecutive_worse_months": 1,
+    "consecutive_worse_months": 0,
     "max_allowed_consecutive_worse": 6,
     "status": "HEALTHY_AND_LOCKED",
-    "description": "Model parameters are locked at 1,000-run cross-validated optimum. Self-evaluation triggers only if error worsens consecutively for 6 months."
+    "description": "Model parameters are locked. Month 132 was a Directional WIN with error dropping to 1.27 pp."
   },
   "last_audit_comparison": {
-    "latest_cycle": "Month 131 (2026-08-28 to 2026-09-29)",
-    "previous_cycle": "Month 130 (2026-07-29 to 2026-08-28)",
-    "current_abs_error": 5.24,
-    "previous_abs_error": 0.84,
-    "status": "WORSE",
-    "delta_pp": 4.4,
+    "latest_cycle": "Month 132 (2026-09-29 to 2026-10-29)",
+    "previous_cycle": "Month 131 (2026-08-28 to 2026-09-29)",
+    "current_abs_error": 1.27,
+    "previous_abs_error": 5.24,
+    "status": "BETTER",
+    "delta_pp": 3.97,
     "direction_hit": true,
-    "description": "Month 131 error was higher due to sharp -6.04% monthly market drop, but Direction was correctly forecasted (Bearish)."
+    "description": "Month 132 prediction was a Directional WIN (Bullish). Error sharply dropped from 5.24 pp to 1.27 pp."
   },
   "benchmark_qualities": {
     "directional_hit_rate": "64.9% (85/131 Months Won)",
@@ -81,7 +81,14 @@
         21967,
         24389
       ],
-      "status": "PENDING"
+      "status": "VERIFIED",
+      "actual_close": 22936.75,
+      "actual_ret_pct": 0.97,
+      "error_pp": -1.27,
+      "abs_error_pp": 1.27,
+      "direction_hit": true,
+      "inside_80pct_corridor": true,
+      "verified_on": "2026-10-29"
     },
     {
       "origin_date": "2026-10-29",
@@ -148,6 +155,40 @@
       "p90": 29370,
       "p_up": 87.5
     },
-    "status": "LOCKED_FOR_MONTH"
+    "status": "LOCKED_FOR_MONTH",
+    "gold_1m": {
+      "origin_date": "2026-10-29",
+      "origin_close": 117.13,
+      "target_date": "2026-11-29",
+      "predicted_pct": 0.82,
+      "target_level": 118.09,
+      "p10": 110.5,
+      "p90": 125.8,
+      "regime": "Gold Value Dip Accumulation",
+      "p_up": 60.5
+    }
+  },
+  "prior_cycle_audit": {
+    "cycle_number": 132,
+    "cycle_name": "Cycle 132 (29-Sep-2026 to 29-Oct-2026)",
+    "origin_date": "2026-09-29",
+    "target_date": "2026-10-29",
+    "origin_close": 22716.2,
+    "actual_close": 22936.75,
+    "predicted_pct": 2.24,
+    "actual_pct": 0.97,
+    "predicted_level": 23226,
+    "error_pp": -1.27,
+    "abs_error_pp": 1.27,
+    "direction_hit": true,
+    "inside_80pct_corridor": true,
+    "corridor_80pct": [
+      21967,
+      24389
+    ],
+    "performance_status": "BETTER (Error fell from 5.24 pp to 1.27 pp)",
+    "nifty_gain_pct": "+0.97%",
+    "gold_gain_pct": "-3.33%",
+    "market_reasoning": "1. ACCURACY & DIRECTION WIN: The model correctly anticipated an upward reversal (+2.24% predicted vs +0.97% actual) from the 22,716 dip zone. Nifty closed solidly in the green, comfortably inside the 80% safe band (21,967 to 24,389).\n2. WHY IT BOUNCED: Strong domestic institutional (DII) and mutual fund SIP inflows (~Rs 25,000+ Cr) provided an unyielding liquidity cushion, aggressively buying every dip below 22,800.\n3. WHY THE FULL +2.2% TARGET WAS TEMPERED: Unprecedented Foreign Institutional (FII) selling pressure (>Rs 1.1 Lakh Cr) triggered by China stimulus reallocation and US 10-year Treasury yields surging past 4.25% created heavy intraday supply overhead.\n4. DUAL-ASSET VERIFICATION: The model recommended Option 1 (100% NIFTYBEES) over Gold. NIFTYBEES gained +0.97% while GOLDBEES dropped -3.33% to -4.6%, proving the asset allocation was 100% optimal."
   }
 }

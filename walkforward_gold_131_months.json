@@ -2356,5 +2356,23 @@
     "Upper_P90": 139.58,
     "Regime": "Gold Value Dip Accumulation",
     "Adaptive_Bias_pp": 1.062
+  },
+  {
+    "Month": 132,
+    "Origin_Date": "2026-09-29",
+    "Target_Date": "2026-10-29",
+    "Origin_Close": 121.17,
+    "Actual_Close": 117.13,
+    "Actual_%": -3.33,
+    "Predicted_%": 0.68,
+    "Predicted_Level": 122.0,
+    "Error_pp": -4.01,
+    "Abs_Error_pp": 4.01,
+    "Direction_Hit": "NO",
+    "Inside_80%_Band": "YES",
+    "Lower_P10": 114.21,
+    "Upper_P90": 129.78,
+    "Regime": "Gold Value Dip Accumulation",
+    "Adaptive_Bias_pp": 0.5837
   }
 ]

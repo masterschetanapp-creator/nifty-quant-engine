@@ -2356,5 +2356,23 @@
     "Upper_P90": 25349,
     "Regime": "Tactical Pullback",
     "Adaptive_Bias_pp": 0.255
+  },
+  {
+    "Month": 132,
+    "Origin_Date": "2026-09-29",
+    "Target_Date": "2026-10-29",
+    "Origin_Close": 22716.2,
+    "Actual_Close": 22936.75,
+    "Actual_%": 0.97,
+    "Predicted_%": 2.24,
+    "Predicted_Level": 23226,
+    "Error_pp": -1.27,
+    "Abs_Error_pp": 1.27,
+    "Direction_Hit": "YES",
+    "Inside_80%_Band": "YES",
+    "Lower_P10": 21967,
+    "Upper_P90": 24389,
+    "Regime": "Value Reversal & Bounce",
+    "Adaptive_Bias_pp": 0.1452
   }
 ]

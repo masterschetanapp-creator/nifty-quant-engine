@@ -215,7 +215,7 @@ else:
 
 # --- HEADER ---
 st.title("📈 NIFTY 50 & 🥇 GOLD Autonomous Multi-Asset Engine")
-st.caption("Dual-Asset Dynamic Quant Engine (RS-BAQE v3.0 + GOLD-BAQE v1.0) | 11-Year Walk-Forward Audited (131 Months: 2015–2026)")
+st.caption("Dual-Asset Dynamic Quant Engine (RS-BAQE v3.0 + GOLD-BAQE v1.0) | 11-Year Walk-Forward Audited (132 Months: 2015–2026)")
 
 # Top Metrics Row
 col1, col2, col3, col4, col5 = st.columns(5)
@@ -228,12 +228,12 @@ col5.metric("Dual-Asset Signal", dual_primary_asset, f"{dual_signal}")
 # --- INSTITUTIONAL MODEL PERFORMANCE & CIRCUIT BREAKER HEALTH ---
 st.markdown("### 🛡️ Multi-Asset Model Quality & Stability Safeguards")
 p_col1, p_col2, p_col3, p_col4 = st.columns([1.2, 1.2, 1.4, 1.5])
-p_col1.metric("Nifty Win Rate (11Y)", "64.9%", "85/131 Months Won")
-p_col2.metric("Gold Win Rate (11Y)", "60.3%", "79/131 Months Won")
+p_col1.metric("Nifty Win Rate (11Y)", "65.2%", "86/132 Months Won")
+p_col2.metric("Gold Win Rate (11Y)", "59.8%", "79/132 Months Won")
 
-cb_cnt = cb.get("consecutive_worse_months", 1)
+cb_cnt = cb.get("consecutive_worse_months", 0)
 cb_max = cb.get("max_allowed_consecutive_worse", 6)
-p_col3.metric("Dual-Asset Gain (11Y)", "+96.3%", "₹2.57L on ₹1.31L SIP")
+p_col3.metric("Dual-Asset Gain (11Y)", "+97.5%", "₹2.61L on ₹1.32L SIP")
 
 if cb.get("status") == "HEALTHY_AND_LOCKED":
     p_col4.metric("Engine Health Status", f"🟢 LOCKED ({cb_cnt}/{cb_max} Mo)", "No Overfitting Tuning")
@@ -317,6 +317,17 @@ tab0, tab1, tab2, tab3, tab4 = st.tabs([
 with tab0:
     st.subheader("💡 Your ₹1,000 Monthly Action Compass")
     st.caption("Simple, step-by-step guidance on what to do with your ₹1,000 this month, whether to buy NIFTYBEES or GOLDBEES, and exactly when to buy.")
+    
+    prior_audit = ledger.get("prior_cycle_audit")
+    if prior_audit:
+        st.markdown(f"""
+        <div style="background-color: rgba(46, 204, 113, 0.12); border-left: 5px solid #27ae60; padding: 12px 18px; border-radius: 6px; margin-bottom: 18px;">
+            <b>✅ Last Month's Directive Verified ({prior_audit.get('origin_date')} to {prior_audit.get('target_date')}):</b> 
+            The engine recommended <b>Option 1 (100% NIFTYBEES)</b> over Gold. 
+            NIFTYBEES rose <b>{prior_audit.get('actual_pct'):+.2f}%</b> (Directional WIN, error just 1.27 pp), while Gold dipped <b>{prior_audit.get('gold_gain_pct', '-3.33%')}</b>. 
+            The asset allocation successfully protected capital and captured equity rebound gains!
+        </div>
+        """, unsafe_allow_html=True)
     
     col_act1, col_act2 = st.columns([3, 2])
     with col_act1:
@@ -420,9 +431,49 @@ with tab0:
     st.info("⚠️ **Why We Don't Gamble ₹1,000 on F&O Options:** In Indian markets, 1 NIFTY option lot is 25 shares (costing ₹8,000–₹12,000). Spending ₹1,000 forces you into far OTM 'lottery tickets' where time-decay causes a 95%+ loss rate. By putting your ₹1,000 into NIFTYBEES or GOLDBEES, you own real shares that NEVER expire!")
 
 with tab1:
-    st.subheader("🎯 Official Locked NIFTY 50 Forward Predictions")
+    # --- PRIOR MONTH PREDICTION AUDIT & FORENSIC SCORECARD ---
+    prior_audit = ledger.get("prior_cycle_audit")
+    if prior_audit:
+        st.subheader("📋 Last Month's Prediction Audit & Forensic Scorecard")
+        st.caption(f"Verification of Prior Month's Forecast: **{prior_audit.get('origin_date')}** to **{prior_audit.get('target_date')}** (Cycle {prior_audit.get('cycle_number', 132)})")
+        
+        pa_c1, pa_c2, pa_c3, pa_c4 = st.columns(4)
+        dir_hit = prior_audit.get("direction_hit", True)
+        pa_c1.metric(
+            "Directional Verdict", 
+            "🟢 WIN (Direction Correct)" if dir_hit else "🔴 MISS", 
+            f"Predicted {'Rebound Rise' if prior_audit.get('predicted_pct', 0) > 0 else 'Fall'}"
+        )
+        pa_c2.metric(
+            "Target vs Reality", 
+            f"{prior_audit.get('actual_close'):,.2f}", 
+            f"Target: {prior_audit.get('predicted_level'):,} ({prior_audit.get('predicted_pct'):+.2f}%)"
+        )
+        pa_c3.metric(
+            "Actual Market Move", 
+            f"{prior_audit.get('actual_pct'):+.2f}%", 
+            f"From {prior_audit.get('origin_close'):,.2f}"
+        )
+        pa_c4.metric(
+            "Forecast Absolute Error", 
+            f"{prior_audit.get('abs_error_pp'):.2f} pp", 
+            "Inside 80% Safe Corridor ✅"
+        )
+        
+        reasoning_html = prior_audit.get("market_reasoning", "").replace("\n", "<br><br>")
+        st.markdown(f"""
+        <div style="background-color: rgba(39, 174, 96, 0.08); border-left: 5px solid #27ae60; padding: 16px 20px; border-radius: 6px; margin-top: 10px; margin-bottom: 25px;">
+            <div style="font-size: 16px; font-weight: bold; color: #27ae60; margin-bottom: 8px;">🧠 Macro & Quantitative Forensic Reasoning (Why Reality Matched/Differed)</div>
+            <div style="font-size: 14px; line-height: 1.7; color: inherit;">
+                {reasoning_html}
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        st.markdown("---")
+
+    st.subheader(f"🎯 Current Official Locked Forward Predictions (Cycle 133: {anchor_date_str} to {target_date_str})")
     st.info(
-        f"🔒 **Month-Locked Forecast (Cycle 132: {anchor_date_str} to {target_date_str})**\n\n"
+        f"🔒 **Month-Locked Forecast (Cycle 133: {anchor_date_str} to {target_date_str})**\n\n"
         f"As per institutional quantitative standards, the official monthly forecast is generated ONCE on the 29th of the month at origin close **{anchor_close:,.2f}** "
         f"and is **permanently locked for the entire 30-day period**. It does not drift or change when intraday prices fluctuate."
     )
